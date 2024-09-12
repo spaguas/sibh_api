@@ -4,4 +4,4 @@ services:
   my-node-app:
     build: .
     ports:
-      - "10000:10000"
+      - "8999:8999"
