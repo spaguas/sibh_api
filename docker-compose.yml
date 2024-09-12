@@ -4,4 +4,6 @@ services:
   my-node-app:
     build: .
     ports:
-      - "8999:8999"
+      - "${PORT}:${PORT}"
+    environment:
+      - PORT=${PORT}
