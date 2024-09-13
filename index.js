@@ -1,6 +1,6 @@
 const express = require('express');
 const cors = require('cors')
-const { testDBConnection, getStations, getMeasurements } = require('./data/database');
+const { testDBConnection, getStations, getMeasurements } = require('./config/database');
 const app = express();
 require('dotenv').config()
 const port = process.env.HTTP_PORT

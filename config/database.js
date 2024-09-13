@@ -1,6 +1,7 @@
-const { buildWhere: buildStationWhere } = require('../modules/stations');
-const { buildWhere: buildMeasurementWhere, buildJoin: buildMeasurementJoin } = require('../modules/measurements');
-const serializer = require('./serializer');
+const { buildWhere: buildStationWhere } = require('../models/stationModel');
+const { buildWhere: buildMeasurementWhere, buildJoin: buildMeasurementJoin } = require('../models/measurementModel');
+const serializer = require('../serializers/serializer');
+const { schema: measurementParamsSchema, handleValidation: measurementHandleValidation } = require('../validation/measurement/measurementParamsValidation');
 require('dotenv').config()
 
 let pg = require('knex')({
@@ -20,7 +21,7 @@ let pg = require('knex')({
 
 const getStations = async (options = {}) =>{
     
-    let serializer_name = validateSerializer(options.serializer, 'station') ? options.serializer : 'very_short'
+    let serializer_name = validateSerializer(options.serializer, 'station') ? options.serializer : 'default'
     
     let fields = serializer.station[serializer_name]
     
@@ -41,17 +42,37 @@ const getStations = async (options = {}) =>{
 }
 
 const getMeasurements = async (options = {}) =>{
-    let serializer_name = validateSerializer(options.serializer, 'measurement') ? options.serializer : 'very_short'
-    let fields = serializer.measurement[serializer_name]
+    options.serializer = options.serializer || 'default' //default value
+    options.group_type = options.group_type || 'minute' //default value
+
+    let validation = await measurementHandleValidation(options)
+
+    if(validation.error && validation.error.details.length > 0){
+        return validation.error
+    }
+    console.log(options.serializer);
+    
+
+    let fields = serializer.measurement[options.serializer]
     
     let query = pg.table('measurements').select(fields).limit(100)
     
-    buildMeasurementJoin(serializer_name, query)
-
+    buildMeasurementJoin(options.serializer, query)
     buildMeasurementWhere(options, query)
+    
+    // let validation = {}
+    
+    
 
     return query
 }
+
+
+const validateSerializer = (string, type) =>{    
+    let available_options = Object.keys(serializer[type])
+    return available_options.includes(string)
+}
+
 
 const testDBConnection = () =>{
     pg.raw('SELECT 1')
@@ -59,12 +80,6 @@ const testDBConnection = () =>{
             console.log('Certo', result);
         })
 }
-
-const validateSerializer = (string, type) =>{    
-    let available_options = Object.keys(serializer[type])
-    return available_options.includes(string)
-}
-
 
 module.exports = {
     testDBConnection,
