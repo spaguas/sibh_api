@@ -1,18 +1,21 @@
 const express = require('express');
 const cors = require('cors')
-const { testDBConnection, getStations } = require('./data/database');
+const { testDBConnection, getStations, getMeasurements } = require('./data/database');
 const app = express();
 require('dotenv').config()
-const port = process.env.PORT
+const port = process.env.HTTP_PORT
 
 
 app.use(cors())
 
-app.get('/stations', async (req, res) => {
-  console.log('sim');
-  
+app.get('/stations', async (req, res) => {  
     let response = await getStations(req.query)
     res.send(JSON.stringify(response));
+});
+
+app.get('/measurements', async (req, res) => {  
+  let response = await getMeasurements(req.query)
+  res.send(JSON.stringify(response));
 });
 
 app.listen(port, () => {

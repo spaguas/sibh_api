@@ -1,4 +1,5 @@
-const { buildWhere } = require('../modules/stations');
+const { buildWhere: buildStationWhere } = require('../modules/stations');
+const { buildWhere: buildMeasurementWhere, buildJoin: buildMeasurementJoin } = require('../modules/measurements');
 const serializer = require('./serializer');
 require('dotenv').config()
 
@@ -19,7 +20,7 @@ let pg = require('knex')({
 
 const getStations = async (options = {}) =>{
     
-    let serializer_name = validateSerializer(options.serializer) ? options.serializer : 'very_short'
+    let serializer_name = validateSerializer(options.serializer, 'station') ? options.serializer : 'very_short'
     
     let fields = serializer.station[serializer_name]
     
@@ -34,11 +35,23 @@ const getStations = async (options = {}) =>{
             .join('station_owners', 'station_owners.id', 'station_prefixes.station_owner_id')            
     }
 
-    buildWhere(options, query)
+    buildStationWhere(options, query)
 
     return query
 }
 
+const getMeasurements = async (options = {}) =>{
+    let serializer_name = validateSerializer(options.serializer, 'measurement') ? options.serializer : 'very_short'
+    let fields = serializer.measurement[serializer_name]
+    
+    let query = pg.table('measurements').select(fields).limit(100)
+    
+    buildMeasurementJoin(serializer_name, query)
+
+    buildMeasurementWhere(options, query)
+
+    return query
+}
 
 const testDBConnection = () =>{
     pg.raw('SELECT 1')
@@ -47,13 +60,14 @@ const testDBConnection = () =>{
         })
 }
 
-const validateSerializer = (string) =>{    
-    let available_options = Object.keys(serializer.station)
+const validateSerializer = (string, type) =>{    
+    let available_options = Object.keys(serializer[type])
     return available_options.includes(string)
 }
 
 
 module.exports = {
     testDBConnection,
-    getStations
+    getStations,
+    getMeasurements
 }
