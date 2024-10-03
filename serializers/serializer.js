@@ -8,7 +8,7 @@ const serializer = {
     measurement:{
         very_short: ['station_prefix_id', 'date_hour', 'value'], //sem join, apenas para identificação de id, posto, tipo_id
         short: ['station_prefix_id', 'station_prefixes.prefix', 'date_hour', 'value', 'read_value', 'station_prefixes.station_type_id'],
-        default: ['station_prefix_id', 'station_prefixes.prefix', 'date_hour', 'value', 'read_value', 'station_prefixes.station_type_id', 'cities.id as city_id', 'cities.name as city', 'stations.latitude', 'stations.longitude', 'station_owners.name as station_owner']
+        default: ['station_prefix_id', 'station_prefixes.prefix', 'value', 'read_value', 'station_prefixes.station_type_id', 'cities.id as city_id', 'cities.name as city', 'stations.latitude', 'stations.longitude', 'station_owners.name as station_owner']
     }
 }
 

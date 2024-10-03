@@ -1,5 +1,5 @@
 const { buildWhere: buildStationWhere } = require('../models/stationModel');
-const { buildWhere: buildMeasurementWhere, buildJoin: buildMeasurementJoin } = require('../models/measurementModel');
+const { buildSelect: buildMeasurementSelect, buildWhere: buildMeasurementWhere, buildJoin: buildMeasurementJoin, buildGroupBy: buildMeasurementGroupBy} = require('../models/measurementModel');
 const serializer = require('../serializers/serializer');
 const { schema: measurementParamsSchema, handleValidation: measurementHandleValidation } = require('../validation/measurement/measurementParamsValidation');
 require('dotenv').config()
@@ -49,19 +49,32 @@ const getMeasurements = async (options = {}) =>{
 
     if(validation.error && validation.error.details.length > 0){
         return validation.error
-    }
-    console.log(options.serializer);
-    
+    }    
 
-    let fields = serializer.measurement[options.serializer]
+    let fields = [...serializer.measurement[options.serializer], pg.raw('SUM(value) as sum_value'),  pg.raw(
+        options.group_type === 'minute' ? "TO_CHAR(date_hour, 'YYYY/MM/DD HH24:MI') AS date" :
+        options.group_type === 'hour' ? "TO_CHAR(date_hour, 'YYYY/MM/DD HH24') AS date" :
+        options.group_type === 'day' ? "TO_CHAR(date_hour, 'YYYY/MM/DD') AS date" :
+        options.group_type === 'month' ? "TO_CHAR(date_hour, 'YYYY/MM') AS date" :
+        "TO_CHAR(date_hour, 'YYYY') AS date"
+    ) ]
+
     
-    let query = pg.table('measurements').select(fields).limit(100)
     
+    
+    let query = pg.table('measurements')
+
+    query.select(fields)
+    
+    // buildMeasurementSelect(options.serializer,query)
     buildMeasurementJoin(options.serializer, query)
     buildMeasurementWhere(options, query)
-    
+    buildMeasurementGroupBy(query,options.serializer)
     // let validation = {}
+
+    query.limit(100)
     
+    console.log(query.toSQL());
     
 
     return query

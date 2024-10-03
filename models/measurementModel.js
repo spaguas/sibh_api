@@ -1,3 +1,12 @@
+const serializer = require("../serializers/serializer")
+
+const buildSelect = (serializer_name, query) =>{
+    let fields = serializer.measurement[serializer_name]
+    console.log(query);
+    
+    query.raw(`SELECT * ${fields.join(",")}`)
+}
+
 const buildWhere = (params, query) =>{
     let whereRaw = []
 
@@ -30,9 +39,22 @@ const buildJoin = (serializer_name, query)=>{
     }
 }
 
+const buildGroupBy = (query, serializer_name) =>{
+    let fields = serializer.measurement[serializer_name]
+    fields = fields.map(x=>x.split(' as ')[0])
+    
+    query.groupByRaw([...fields,  'date'].join(','))
+}
+
+const fieldsByGrouptype = _ => {
+
+}
+
 
 
 module.exports = {
     buildWhere,
-    buildJoin
+    buildJoin,
+    buildGroupBy,
+    buildSelect
 }
