@@ -9,6 +9,12 @@ const serializer = {
         very_short: ['station_prefix_id', 'date_hour', 'value'], //sem join, apenas para identificação de id, posto, tipo_id
         short: ['station_prefix_id', 'station_prefixes.prefix', 'date_hour', 'value', 'read_value', 'station_prefixes.station_type_id'],
         default: ['station_prefix_id', 'station_prefixes.prefix', 'value', 'read_value', 'station_prefixes.station_type_id', 'cities.id as city_id', 'cities.name as city', 'stations.latitude', 'stations.longitude', 'station_owners.name as station_owner']
+    },
+    city:{
+        very_short: ['id', 'cod_ibge', 'name'], //sem join, apenas para identificação de id, posto, tipo_id
+    },
+    parameter:{
+        default: ['id',  'name', 'parameterizable_type', 'parameterizable_id', 'values', 'options', 'parameter_type_id']
     }
 }
 

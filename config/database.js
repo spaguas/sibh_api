@@ -1,7 +1,12 @@
 const { buildWhere: buildStationWhere } = require('../models/stationModel');
 const { buildSelect: buildMeasurementSelect, buildWhere: buildMeasurementWhere, buildJoin: buildMeasurementJoin, buildGroupBy: buildMeasurementGroupBy} = require('../models/measurementModel');
+const { buildWhere: buildCityWhere} = require('../models/cityModel')
 const serializer = require('../serializers/serializer');
 const { schema: measurementParamsSchema, handleValidation: measurementHandleValidation } = require('../validation/measurement/measurementParamsValidation');
+
+
+// const { additionalObjects: citiesAdditionalObjects} = require('../modules/cities');
+const { buildWhere: buildParameterWhere} = require('../models/parameterModel');
 require('dotenv').config()
 
 let pg = require('knex')({
@@ -80,6 +85,41 @@ const getMeasurements = async (options = {}) =>{
     return query
 }
 
+const getCities = async (options = {}) =>{
+    let serializer_name = 'very_short'
+    let fields = serializer.city[serializer_name]
+    
+    let query = pg.table('cities').select(fields)
+    
+    // buildMeasurementJoin(serializer_name, query)
+
+    buildCityWhere(options, query)
+    
+
+    query = await query //executando ela
+
+    if(options.parameter_type_ids && options.parameter_type_ids.length > 0){   
+        
+        let parameters = await getParameters({parameterizable_type: 'City', parameterizable_ids: query.map(x=>x.id), parameter_type_ids: options.parameter_type_ids})
+        
+        query.map(city=>city.parameters = parameters.filter(x=> x.parameterizable_type === 'City' && x.parameterizable_id === city.id))
+    } 
+
+
+    return query
+}
+
+const getParameters = async (options = {}) =>{
+    let fields = serializer.parameter['default']
+    let query = pg.table('parameters').select(fields)
+    
+    buildParameterWhere(options, query)
+
+    console.log(query.toString());
+    
+
+    return query
+}
 
 const validateSerializer = (string, type) =>{    
     let available_options = Object.keys(serializer[type])
@@ -97,5 +137,7 @@ const testDBConnection = () =>{
 module.exports = {
     testDBConnection,
     getStations,
-    getMeasurements
+    getMeasurements,
+    getCities,
+    getParameters
 }
