@@ -7,3 +7,9 @@ services:
       - "${PORT}:${PORT}"
     environment:
       - PORT=${PORT}
+networks:
+  sibhapi-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.66.0.0/16
