@@ -2,6 +2,7 @@ version: '3.8'
 
 services:
   sibh-api:
+    restart: always
     build: .
     ports:
       - "${PORT}:${PORT}"

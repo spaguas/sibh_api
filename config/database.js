@@ -2,7 +2,9 @@ const { buildWhere: buildStationWhere } = require('../models/stationModel');
 const { buildSelect: buildMeasurementSelect, buildWhere: buildMeasurementWhere, buildJoin: buildMeasurementJoin, buildGroupBy: buildMeasurementGroupBy} = require('../models/measurementModel');
 const { buildWhere: buildCityWhere} = require('../models/cityModel')
 const serializer = require('../serializers/serializer');
-const { schema: measurementParamsSchema, handleValidation: measurementHandleValidation } = require('../validation/measurement/measurementParamsValidation');
+const { handleValidation: measurementHandleValidation } = require('../validation/measurement/measurementParamsValidation');
+const { handleValidation: cityHandleValidation} = require('../validation/city/cityParamsValidation')
+const { handleValidation: newParameterValidation} = require('../validation/parameter/newParameterParamsValidation')
 
 
 // const { additionalObjects: citiesAdditionalObjects} = require('../modules/cities');
@@ -88,6 +90,12 @@ const getMeasurements = async (options = {}) =>{
 const getCities = async (options = {}) =>{
     let serializer_name = 'very_short'
     let fields = serializer.city[serializer_name]
+
+    let validation = await cityHandleValidation(options)
+
+    if(validation.error && validation.error.details.length > 0){
+        return validation.error
+    } 
     
     let query = pg.table('cities').select(fields)
     
@@ -95,7 +103,6 @@ const getCities = async (options = {}) =>{
 
     buildCityWhere(options, query)
     
-
     query = await query //executando ela
 
     if(options.parameter_type_ids && options.parameter_type_ids.length > 0){   
@@ -103,8 +110,7 @@ const getCities = async (options = {}) =>{
         let parameters = await getParameters({parameterizable_type: 'City', parameterizable_ids: query.map(x=>x.id), parameter_type_ids: options.parameter_type_ids})
         
         query.map(city=>city.parameters = parameters.filter(x=> x.parameterizable_type === 'City' && x.parameterizable_id === city.id))
-    } 
-
+    }
 
     return query
 }
@@ -119,6 +125,17 @@ const getParameters = async (options = {}) =>{
     
 
     return query
+}
+
+const newParameters = async (options ={}) =>{
+    let validation = await newParameterValidation(options)
+    
+
+    if(validation.error && validation.error.details.length > 0){
+        return validation.error
+    }
+
+    return {}
 }
 
 const validateSerializer = (string, type) =>{    
@@ -139,5 +156,6 @@ module.exports = {
     getStations,
     getMeasurements,
     getCities,
-    getParameters
+    getParameters,
+    newParameters
 }
