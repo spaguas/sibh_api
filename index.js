@@ -12,7 +12,7 @@ app.use(cors())
 app.get('/stations', async (req, res) => {
   try {
     let response = await getStations(req.query)
-    res.send(JSON.stringify(response));
+    res.send(response);
   } catch(e){
     res.status(500)
   }

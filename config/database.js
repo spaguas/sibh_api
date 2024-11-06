@@ -32,9 +32,14 @@ const getStations = async (options = {}) =>{
     
     let fields = serializer.station[serializer_name]
     
-    let query = pg.table('station_prefixes').select(fields)
+    if(serializer_name === 'complete'){
+        fields.push(pg.raw("CASE WHEN transmission_status = 0 THEN 'ok' ELSE 'pendente' END AS transmission_status"))
+    }
 
-    if(['default'].includes(serializer_name)){                    
+    let query = pg.table('station_prefixes').select(fields)    
+    
+
+    if(['default', 'complete'].includes(serializer_name)){                    
             query.join('stations', 'stations.id', 'station_prefixes.station_id')
             .join('cities', 'cities.id', 'stations.city_id')
             .join('ugrhis', 'ugrhis.id', 'stations.ugrhi_id')
@@ -42,8 +47,10 @@ const getStations = async (options = {}) =>{
             .join('station_types', 'station_types.id', 'station_prefixes.station_type_id')
             .join('station_owners', 'station_owners.id', 'station_prefixes.station_owner_id')            
     }
+    
 
     buildStationWhere(options, query)
+    
 
     return query
 }
