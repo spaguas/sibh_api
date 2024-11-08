@@ -5,6 +5,7 @@ const serializer = require('../serializers/serializer');
 const { handleValidation: measurementHandleValidation } = require('../validation/measurement/measurementParamsValidation');
 const { handleValidation: cityHandleValidation} = require('../validation/city/cityParamsValidation')
 const { handleValidation: newParameterValidation} = require('../validation/parameter/newParameterParamsValidation')
+const { handleValidation: getParameterValidation} = require('../validation/parameter/getParameterParamsValidation')
 
 
 // const { additionalObjects: citiesAdditionalObjects} = require('../modules/cities');
@@ -65,30 +66,30 @@ const getMeasurements = async (options = {}) =>{
         return validation.error
     }    
 
-    let fields = [...serializer.measurement[options.serializer], pg.raw('SUM(value) as sum_value'),  pg.raw(
-        options.group_type === 'minute' ? "TO_CHAR(date_hour, 'YYYY/MM/DD HH24:MI') AS date" :
-        options.group_type === 'hour' ? "TO_CHAR(date_hour, 'YYYY/MM/DD HH24') AS date" :
-        options.group_type === 'day' ? "TO_CHAR(date_hour, 'YYYY/MM/DD') AS date" :
-        options.group_type === 'month' ? "TO_CHAR(date_hour, 'YYYY/MM') AS date" :
-        "TO_CHAR(date_hour, 'YYYY') AS date"
-    ) ]
+    let fields = [...serializer.measurement[options.serializer], pg.raw('COUNT(value) as qtd'), 
+        pg.raw('CASE WHEN station_prefixes.station_type_id = 2 THEN SUM(value) ELSE AVG(value) END as value'),
+        pg.raw('CASE WHEN station_prefixes.station_type_id = 2 THEN SUM(read_value) ELSE AVG(read_value) END as read_value'),
+        pg.raw('MAX(value) as max_value')
+    ]    
 
-    
-    
+    if(options.group_type != 'all'){
+        fields.push(pg.raw(
+            options.group_type === 'minute' ? "TO_CHAR(date_hour, 'YYYY/MM/DD HH24:MI') AS date" :
+            options.group_type === 'hour' ? "TO_CHAR(date_hour, 'YYYY/MM/DD HH24') AS date" :
+            options.group_type === 'day' ? "TO_CHAR(date_hour, 'YYYY/MM/DD') AS date" :
+            options.group_type === 'month' ? "TO_CHAR(date_hour, 'YYYY/MM') AS date" :
+            "TO_CHAR(date_hour, 'YYYY') AS date"))
+    }     
     
     let query = pg.table('measurements')
 
     query.select(fields)
     
-    // buildMeasurementSelect(options.serializer,query)
     buildMeasurementJoin(options.serializer, query)
     buildMeasurementWhere(options, query)
-    buildMeasurementGroupBy(query,options.serializer)
-    // let validation = {}
+    buildMeasurementGroupBy(query,options.serializer,options.group_type)
 
-    query.limit(100)
-    
-    console.log(query.toSQL());
+    query.orderByRaw(`station_prefix_id ${options.group_type != 'all' ? ", date desc" : ""}`);
     
 
     return query
@@ -123,13 +124,20 @@ const getCities = async (options = {}) =>{
 }
 
 const getParameters = async (options = {}) =>{
-    let fields = serializer.parameter['default']
+    
+    options.serializer = options.serializer || 'default'
+    
+    let validation = await getParameterValidation(options)
+
+    if(validation.error && validation.error.details.length > 0){
+        return validation.error
+    }
+
+    let fields = serializer.parameter[options.serializer]
+
     let query = pg.table('parameters').select(fields)
     
-    buildParameterWhere(options, query)
-
-    console.log(query.toString());
-    
+    buildParameterWhere(options, query)    
 
     return query
 }

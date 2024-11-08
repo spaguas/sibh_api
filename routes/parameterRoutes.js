@@ -1,8 +1,8 @@
-const {newParameters} = require('../config/database')
+const {getParameters} = require('../config/database')
 
 const createRoutes = (app) =>{
     app.get('/parameters', async (req, res) => {  
-        res.send({teste: 'Diego'});
+        res.send(await getParameters(req.query));
     });
 
     app.post('/parameters', async (req, res) => {  

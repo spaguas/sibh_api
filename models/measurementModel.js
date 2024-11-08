@@ -21,7 +21,6 @@ const buildWhere = (params, query) =>{
     buildClause('station_prefix_ids', 'measurements.station_prefix_id', 'in')
     buildClause('start_date', 'measurements.date_hour', '>=')
     buildClause('end_date', 'measurements.date_hour', '<=')
-    
 
     if(whereRaw){
         query.whereRaw(whereRaw.join(' and '))
@@ -29,21 +28,28 @@ const buildWhere = (params, query) =>{
 }
 
 const buildJoin = (serializer_name, query)=>{
-    if(['short'].includes(serializer_name)){                    
+    if(['very_short','short'].includes(serializer_name)){                    
         query.join('station_prefixes', 'station_prefixes.id', 'measurements.station_prefix_id')
     } else if(['default'].includes(serializer_name)){
         query.join('station_prefixes', 'station_prefixes.id', 'measurements.station_prefix_id')
             .join('stations', 'stations.id', 'station_prefixes.station_id')
             .join('cities', 'cities.id', 'stations.city_id')
+            .join('transmission_types', 'transmission_types.id', 'measurements.transmission_type_id')
             .join('station_owners', 'station_owners.id', 'station_prefixes.station_owner_id')
     }
 }
 
-const buildGroupBy = (query, serializer_name) =>{
+const buildGroupBy = (query, serializer_name,group_type) =>{
     let fields = serializer.measurement[serializer_name]
-    fields = fields.map(x=>x.split(' as ')[0])
     
-    query.groupByRaw([...fields,  'date'].join(','))
+    
+    fields = fields.map(x=>x.split(' as ')[0]).filter(x=> !['value', 'read_value'].includes(x))
+
+    if(group_type != 'all'){
+        fields.push('date')
+    } 
+    
+    query.groupByRaw([...fields].join(','))
 }
 
 const fieldsByGrouptype = _ => {

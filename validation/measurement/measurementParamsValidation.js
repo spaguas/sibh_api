@@ -1,4 +1,5 @@
 const Joi = require('joi');
+const moment = require('moment')
 
 const schema = Joi.object({
     station_prefix_ids: Joi.array()
@@ -18,25 +19,32 @@ const schema = Joi.object({
     //     is: Joi.date(), 
     //     then: Joi.date().greater(Joi.ref('start_date')).required()
     // }),
-    end_date: Joi.date().greater(Joi.ref('start_date')).required(),
+    end_date: Joi.date().when('start_date', {
+        is: Joi.exist(),
+        then: Joi.required(),
+        otherwise: Joi.optional()
+    }).greater(Joi.ref('start_date')).required(),
     group_type: Joi.string()
-            .valid('minute', 'hour', 'day', 'month', 'year')
-            .required()
+            .valid('minute', 'hour', 'day', 'month', 'year', 'all')
+            .required(),
+    parameter_type_ids: Joi.array().optional(),
+    hours: Joi.number().optional().max(31*24)
 })
 .or('station_prefix_ids') //preciso de 1 desses parâmetros
-.oxor('station_prefix_ids') //preciso de apenas um desses parâmetros
+.oxor('start_date', 'hours') //preciso de apenas um desses parâmetros(OBVIAMENTE deixei aqui pra lembrar de como usar em outros casos)
 .custom((value, helpers) =>{ // validar a diff entre as datas
     const {start_date, end_date} = value
     const diffTime = Math.abs(new Date(end_date) - new Date(start_date));
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); // Convert ms to days
+    const MAX_DIFF = getMaxDiff(helpers)
 
-    if (diffDays > 31) {
-        return helpers.error('date.diff');
+    if (diffDays > MAX_DIFF) {
+        return helpers.error('date.diff', {MAX_DIFF});
     }
 
     return value
 }, 'Validação período').messages({ //criando novo tipo de erro 'date.diff'
-    'date.diff': 'A diferença entre data de início e fim deve ser menor ou igual a 31 dias.'
+    'date.diff': 'A diferença entre data de início e fim deve ser menor ou igual a {#MAX_DIFF} dias.'
 })
 
 const handleValidation = async (params) =>{
@@ -54,6 +62,16 @@ const handleValidation = async (params) =>{
 
 const validate = async params =>{
     return schema.validate(params, { abortEarly: false })
+}
+
+const getMaxDiff = data =>{
+    
+    let group_type_days = {minute: 31, hour: 60, day: 365, month: 365*5}
+    
+    let {group_type} = data.original
+    
+    return [group_type_days[group_type]].reduce((p,c)=> c < p ? c : p)
+    
 }
 
 module.exports = {

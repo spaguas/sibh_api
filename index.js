@@ -1,6 +1,6 @@
 const express = require('express');
 const cors = require('cors')
-const { getStations, getMeasurements, getCities } = require('./config/database');
+const { getStations, getMeasurements, getCities, getParameters } = require('./config/database');
 const { createRoutes: createParamRoutes} = require('./routes/parameterRoutes')
 const app = express();
 require('dotenv').config()
@@ -21,7 +21,11 @@ app.get('/stations', async (req, res) => {
 app.get('/measurements', async (req, res) => {  
   try{
     let response = await getMeasurements(req.query)
-    res.send(JSON.stringify(response));
+    let references
+    if(req.query['parameter_type_ids']){
+      references = await getParameters({parameterizable_type: 'StationPrefix', parameterizable_ids: req.query.station_prefix_ids, parameter_type_ids: req.query.parameter_type_ids})
+    }
+    res.send({measurements: response, references: references});
   } catch (e){
     res.status(500)
   }
