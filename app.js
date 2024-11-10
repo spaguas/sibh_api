@@ -1,6 +1,8 @@
 const express = require('express');
 const cors = require('cors')
 const { getStations, getMeasurements, getCities, getParameters } = require('./config/database');
+const parameterRoutes = require('./routes/parameterRoutes')
+const alertRoutes = require('./routes/alertRoutes')
 
 const app = express();
 require('dotenv').config()
@@ -45,6 +47,9 @@ app.get('/cities', async (req, res) => {
   
   res.send(response);
 });
+
+app.use('/', parameterRoutes)
+app.use('/', alertRoutes)
 
 
 module.exports = app

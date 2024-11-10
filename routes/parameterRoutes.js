@@ -1,16 +1,14 @@
 const {getParameters} = require('../config/database')
+const express = require('express');
+const router = express.Router();
 
-const createRoutes = (app) =>{
-    app.get('/parameters', async (req, res) => {  
-        res.send(await getParameters(req.query));
-    });
+router.get('/parameters', async (req, res) => {  
+    res.send(await getParameters(req.query));
+});
 
-    app.post('/parameters', async (req, res) => {  
-        let response = await newParameters(req.query)
-        res.send(response);
-    });
-}
+router.post('/parameters', async (req, res) => {  
+    let response = await newParameters(req.query)
+    res.send(response);
+});
 
-module.exports = {
-    createRoutes
-}
+module.exports = router

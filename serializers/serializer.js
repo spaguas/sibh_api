@@ -22,6 +22,9 @@ const serializer = {
     parameter:{
         short: ['id', 'parameterizable_type', 'parameterizable_id', 'values'],
         default: ['id',  'name', 'parameterizable_type', 'parameterizable_id', 'values', 'options', 'parameter_type_id']
+    },
+    alert:{
+        default: ['id', 'alert_type_id', 'flag', 'date_hour', 'alertable_id', 'alertable_type', 'options', 'whatsapp_send', 'email_send', 'created_at', 'updated_at']
     }
 }
 
