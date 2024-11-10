@@ -2,8 +2,11 @@ const Joi = require('joi');
 const moment = require('moment')
 
 const schema = Joi.object({
-    station_prefix_ids: Joi.array()
-        .max(10),
+    station_prefix_ids: Joi.array().max(10).when('last_hours', {
+        is: Joi.exist(),
+        then: Joi.optional(),
+        otherwise: Joi.required()
+    }),
     serializer: Joi.string()
         .valid('very_short', 'short', 'default') //validar os valores aceitos
         .required(),
@@ -14,11 +17,11 @@ const schema = Joi.object({
             'any.unknown': 'ignorar field e erro' //erro custom para capturar
         })
     }),
-    start_date: Joi.date().required(),
-    // end_date: Joi.when('start_date', {
-    //     is: Joi.date(), 
-    //     then: Joi.date().greater(Joi.ref('start_date')).required()
-    // }),
+    start_date: Joi.date().when('last_hours', {
+        is: Joi.exist(),
+        then: Joi.optional(),
+        otherwise: Joi.required()
+    }),
     end_date: Joi.date().when('start_date', {
         is: Joi.exist(),
         then: Joi.required(),
@@ -28,10 +31,11 @@ const schema = Joi.object({
             .valid('minute', 'hour', 'day', 'month', 'year', 'all')
             .required(),
     parameter_type_ids: Joi.array().optional(),
-    hours: Joi.number().optional().max(31*24)
+    last_hours: Joi.number().optional().max(72),
+    public: Joi.boolean().optional()
 })
-.or('station_prefix_ids') //preciso de 1 desses parâmetros
-.oxor('start_date', 'hours') //preciso de apenas um desses parâmetros(OBVIAMENTE deixei aqui pra lembrar de como usar em outros casos)
+.or('station_prefix_ids','last_hours') //preciso de 1 desses parâmetros
+// .oxor('start_date', 'last_hours') //preciso de apenas um desses parâmetros(OBVIAMENTE deixei aqui pra lembrar de como usar em outros casos)
 .custom((value, helpers) =>{ // validar a diff entre as datas
     const {start_date, end_date} = value
     const diffTime = Math.abs(new Date(end_date) - new Date(start_date));

@@ -13,14 +13,24 @@ const buildWhere = (params, query) =>{
     const buildClause = (param_name, table_field_name, compare_type) =>{
         let value = params[param_name]
         if(value){
-            value = compare_type === 'like' ? `'%${value}%'` :  compare_type === 'in' ? `(${value})` : `'${value}'`
-            whereRaw.push(`${table_field_name} ${compare_type} ${value}`)
+
+            if(param_name === 'last_hours'){
+                whereRaw.push(`date_hour >= now() - interval '${value} hours'`)
+            } else {
+                value = compare_type === 'like' ? `'%${value}%'` :  compare_type === 'in' ? `(${value})` : `'${value}'`
+                whereRaw.push(`${table_field_name} ${compare_type} ${value}`)
+            }
+
+            
         }
     }
     
     buildClause('station_prefix_ids', 'measurements.station_prefix_id', 'in')
     buildClause('start_date', 'measurements.date_hour', '>=')
     buildClause('end_date', 'measurements.date_hour', '<=')
+    buildClause('last_hours', 'measurements.date_hour', '<=')
+    buildClause('station_type_id', 'station_prefixes.station_type_id', '=')
+    buildClause('public', 'station_prefixes.public', '=')
 
     if(whereRaw){
         query.whereRaw(whereRaw.join(' and '))

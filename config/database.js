@@ -56,8 +56,12 @@ const getMeasurements = async (options = {}) =>{
     let fields = [...serializer.measurement[options.serializer], pg.raw('COUNT(value) as qtd'), 
         pg.raw('CASE WHEN station_prefixes.station_type_id = 2 THEN SUM(value) ELSE AVG(value) END as value'),
         pg.raw('CASE WHEN station_prefixes.station_type_id = 2 THEN SUM(read_value) ELSE AVG(read_value) END as read_value'),
-        pg.raw('MAX(value) as max_value')
     ]    
+
+    if(options.group_type != 'minute'){
+        fields.push(pg.raw('MAX(value) as max_value'))
+        fields.push(pg.raw('MIN(value) as min_value'))
+    }
 
     if(options.group_type != 'all'){
         fields.push(pg.raw(
@@ -78,6 +82,8 @@ const getMeasurements = async (options = {}) =>{
 
     query.orderByRaw(`station_prefix_id ${options.group_type != 'all' ? ", date desc" : ""}`);
     
+    // query.limit(100)
+
 
     return query
 }
