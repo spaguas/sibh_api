@@ -3,10 +3,13 @@ const cors = require('cors')
 const { getStations, getMeasurements, getCities, getParameters } = require('./config/database');
 const parameterRoutes = require('./routes/parameterRoutes')
 const alertRoutes = require('./routes/alertRoutes')
+const bodyParser = require('body-parser')
 
 const app = express();
 require('dotenv').config()
 
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cors())
 
 app.get('/stations', async (req, res) => {

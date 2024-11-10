@@ -7,7 +7,7 @@ router.get('/', async (req, res) => {
     let alerts = await getAlerts(req.query)
     res.send(alerts);
 });
-router.post('/new', async (req, res) => {
+router.post('/new', async (req, res) => {   
     let result = await insertAlert(req.body)
     res.status(result.status).send(result);
 });
