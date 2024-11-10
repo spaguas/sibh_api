@@ -49,7 +49,7 @@ app.get('/cities', async (req, res) => {
 });
 
 app.use('/', parameterRoutes)
-app.use('/', alertRoutes)
+app.use('/alerts', alertRoutes)
 
 
 module.exports = app
