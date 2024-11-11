@@ -44,6 +44,7 @@ const getStations = async (options = {}) =>{
 }
 
 const getMeasurements = async (options = {}) =>{
+    
     options.serializer = options.serializer || 'default' //default value
     options.group_type = options.group_type || 'minute' //default value
 
