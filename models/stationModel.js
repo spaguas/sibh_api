@@ -21,7 +21,7 @@ const buildWhere = (params, query) =>{
     buildClause('ugrhi_name', 'ugrhis.name', 'like')
     buildClause('subugrhi_id', 'stations.subugrhi_id', '=')
     buildClause('station_owner_id', 'station_prefixes.station_owner_id', '=')
-    buildClause('station_owner_ids', 'station_prefixes.station_owner_ids', 'in')
+    buildClause('station_owner_ids', 'station_prefixes.station_owner_id', 'in')
     buildClause('station_owner', 'station_owners.name', '=')
 
     if(whereRaw){
