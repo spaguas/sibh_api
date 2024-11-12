@@ -18,8 +18,10 @@ const buildWhere = (params, query) =>{
     whereRaw.push(buildClause(params,'station_owner_ids', 'station_prefixes.station_owner_id', 'in'))
     whereRaw.push(buildClause(params,'station_owner', 'station_owners.name', '='))
 
+    whereRaw.push(buildClause(params, 'parameterizable_id', 'parameters.parameterizable_id', '='))
+
     if(whereRaw.length > 1){
-        query.whereRaw(whereRaw.join(' and '))
+        query.whereRaw(whereRaw.filter(x=>x).join(' and '))
     }
 }
 
