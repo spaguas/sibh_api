@@ -35,9 +35,17 @@ const getStations = async (options = {}) =>{
             .join('station_types', 'station_types.id', 'station_prefixes.station_type_id')
             .join('station_owners', 'station_owners.id', 'station_prefixes.station_owner_id')            
     }
-    
 
     buildStationWhere(options, query)
+
+    query = await query //executando ela
+
+    if(options.parameter_type_ids && options.parameter_type_ids.length > 0){   
+        
+        let parameters = await getParameters({parameterizable_type: 'StationPrefix', parameterizable_ids: query.map(x=>x.id), parameter_type_ids: options.parameter_type_ids})
+        
+        query.map(station_prefix=>station_prefix.parameters = parameters.filter(x=> x.parameterizable_type === 'StationPrefix' && x.parameterizable_id === station_prefix.id))
+    }   
     
 
     return query
