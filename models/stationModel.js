@@ -25,8 +25,13 @@ const buildWhere = (params, query) =>{
     }
 }
 
+const buildRedisWhere = () =>{
+
+}
+
 
 
 module.exports = {
-    buildWhere
+    buildWhere,
+    buildRedisWhere
 }

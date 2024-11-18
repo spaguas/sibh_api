@@ -1,6 +1,17 @@
 version: '3.8'
 
 services:
+  redis:
+    restart: always
+    image: redis:latest
+    ports:
+      - "${REDIS_PORT}:${REDIS_PORT}"
+    networks:
+      - sibhapi-network
+    volumes:
+      - redis-data:/data
+      - ./redis.conf:/usr/local/etc/redis/redis.conf
+    command: ["redis-server", "/usr/local/etc/redis/redis.conf"]
   sibh-api:
     restart: always
     build: .
@@ -8,9 +19,18 @@ services:
       - "${PORT}:${PORT}"
     environment:
       - PORT=${PORT}
+      - REDIS_HOST=redis
+    depends_on:
+      - redis
+    networks:
+      - sibhapi-network
+    links:
+      - redis
 networks:
   sibhapi-network:
     driver: bridge
     ipam:
       config:
         - subnet: 172.66.0.0/16
+volumes:
+  redis-data:
