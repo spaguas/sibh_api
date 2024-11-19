@@ -29,8 +29,5 @@ services:
 networks:
   sibhapi-network:
     driver: bridge
-    ipam:
-      config:
-        - subnet: 172.66.0.0/16
 volumes:
   redis-data:

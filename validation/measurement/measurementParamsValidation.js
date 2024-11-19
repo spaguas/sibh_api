@@ -10,11 +10,15 @@ const schema = Joi.object({
     serializer: Joi.string()
         .valid('very_short', 'short', 'default') //validar os valores aceitos
         .required(),
-    station_type_id: Joi.when('serializer', {
-        is: Joi.valid('short','default'), //validando se o serializer vai ter o campo station_type
-        then: Joi.number().min(1).optional(),
-        otherwise: Joi.forbidden().messages({
-            'any.unknown': 'ignorar field e erro' //erro custom para capturar
+    station_type_id: Joi.when('last_hours', {
+        is: Joi.exist(),
+        then: Joi.number().min(1).required(),
+        otherwise: Joi.when('serializer', {
+            is: Joi.valid('short','default'), //validando se o serializer vai ter o campo station_type
+            then: Joi.number().min(1).optional(),
+            otherwise: Joi.forbidden().messages({
+                'any.unknown': 'ignorar field e erro' //erro custom para capturar
+            })
         })
     }),
     start_date: Joi.date().when('last_hours', {
@@ -32,7 +36,7 @@ const schema = Joi.object({
             .valid('minute', 'hour', 'day', 'month', 'year', 'all')
             .required(),
     parameter_type_ids: Joi.array().optional(),
-    last_hours: Joi.number().optional().max(72),
+    last_hours: Joi.number().optional().max(1000),
     public: Joi.boolean().optional(),
     format: Joi.string().optional()
 })
