@@ -14,10 +14,24 @@ const operations = {
 }
 
 const writeKey = async (key_id, obj, ex) => {
-
+    
     let data = Object.entries(obj).flat()
     
     await redis.hset(key_id, data)
+
+    if(ex){ //expiration time
+        await redis.expire(key_id, ex);
+    }
+
+    return true
+}
+
+const writeList = async (key_id, obj, ex) =>{
+    try{
+        redis.set(key_id, JSON.stringify(obj));
+    }catch(e){
+        console.log('Erro ao salvar key no redis', e);   
+    }
 
     if(ex){ //expiration time
         await redis.expire(key_id, ex);
@@ -38,6 +52,10 @@ const scanKey = async (key) =>{
 
     const data = await Promise.all(keys.map((key) => redis.hgetall(key)));
     return data
+}
+
+const scanList = async key =>{
+    return JSON.parse(await redis.get(key)) || [];
 }
 
 const filterData = (data, params) => {
@@ -80,5 +98,7 @@ module.exports = {
     writeKey,
     scanKey,
     clearDatabase,
-    filterData
+    filterData,
+    writeList,
+    scanList
 }

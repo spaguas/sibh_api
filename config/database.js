@@ -51,16 +51,7 @@ const getStations = async (options = {}) =>{
     return query
 }
 
-const getMeasurements = async (options = {}) =>{
-    
-    options.serializer = options.serializer || 'default' //default value
-    options.group_type = options.group_type || 'minute' //default value
-
-    let validation = await measurementHandleValidation(options)
-
-    if(validation.error && validation.error.details.length > 0){
-        return validation.error
-    }    
+const getMeasurements = async (options = {}) =>{   
 
     let fields = [...serializer.measurement[options.serializer], pg.raw('COUNT(value) as qtd'), 
         pg.raw('CASE WHEN station_prefixes.station_type_id = 2 THEN SUM(value) ELSE AVG(value) END as value'),
@@ -92,8 +83,6 @@ const getMeasurements = async (options = {}) =>{
     query.orderByRaw(`station_prefix_id ${options.group_type != 'all' ? ", date desc" : ""}`);
 
     console.log(query.toSQL());
-    
-
 
     return query
 }
