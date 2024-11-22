@@ -38,10 +38,8 @@ router.get('/now', async(req, res)=>{
     let options = req.query
     options.serializer = options.serializer || 'default' //default value
     options.group_type = options.group_type || 'all' //default value
-    console.log(options);
     
     let validation = await nowValidation(options) //validando parâmetros
-        console.log(validation);
         
     if(validation.error && validation.error.details.length > 0){
         res.status(500)
