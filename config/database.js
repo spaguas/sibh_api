@@ -61,6 +61,8 @@ const getMeasurements = async (options = {}) =>{
     if(options.group_type != 'minute'){
         fields.push(pg.raw('MAX(value) as max_value'))
         fields.push(pg.raw('MIN(value) as min_value'))
+        fields.push(pg.raw('MIN(date_hour) as min_date'))
+        fields.push(pg.raw('MAX(date_hour) as max_date'))
     }
 
     if(options.group_type != 'all'){

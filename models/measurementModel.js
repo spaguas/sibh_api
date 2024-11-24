@@ -48,7 +48,7 @@ const buildWhere = (params, query) =>{
         if(value){
 
             if(param_name === 'hours'){
-                whereRaw.push(`date_hour >= now() - interval '${value} hours'`)
+                whereRaw.push(`date_hour >= now() AT TIME ZONE 'UTC' - interval '${value} hours'`)
             } else {
                 value = compare_type === 'like' ? `'%${value}%'` :  compare_type === 'in' ? `(${value})` : `'${value}'`
                 whereRaw.push(`${table_field_name} ${compare_type} ${value}`)
