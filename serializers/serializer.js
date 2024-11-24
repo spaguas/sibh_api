@@ -14,7 +14,8 @@ const serializer = {
     measurement:{
         very_short: ['station_prefix_id','station_prefixes.station_type_id'], //sem join, apenas para identificação de id, posto, tipo_id
         short: ['station_prefix_id', 'station_prefixes.prefix', 'station_prefixes.station_type_id'],
-        default: ['station_prefix_id', 'station_prefixes.prefix', 'stations.name as station_name',  'station_prefixes.station_type_id', 'cities.id as city_id', 'cities.name as city', 'stations.latitude', 'stations.longitude', 'station_owners.name as station_owner','transmission_types.name as transmission_type_name', 'measurement_gap']
+        default: ['station_prefix_id', 'station_prefixes.prefix', 'stations.name as station_name',  'station_prefixes.station_type_id', 'cities.id as city_id', 'cities.name as city', 'stations.latitude', 'stations.longitude', 'station_owners.name as station_owner','transmission_types.name as transmission_type_name', 'measurement_gap'],
+        complete: ['station_prefix_id', 'station_prefixes.prefix', 'stations.name as station_name',  'station_prefixes.station_type_id', 'cities.id as city_id', 'cities.name as city', 'stations.latitude', 'stations.longitude', 'station_owners.name as station_owner', 'stations.ugrhi_id as ugrhi_id', 'ugrhis.name as ugrhi_name', 'ugrhis.cod as ugrhi_cod','subugrhis.name as subugrhi_name', 'subugrhis.id as subugrhi_id','subugrhis.cod as subugrhi_cod','transmission_types.name as transmission_type_name', 'measurement_gap']
     },
     city:{
         very_short: ['id', 'cod_ibge', 'name'], //sem join, apenas para identificação de id, posto, tipo_id

@@ -3,7 +3,7 @@ const Joi = require('joi');
 const schema = Joi.object({
     station_type_id: Joi.number().required(),
     serializer: Joi.string()
-        .valid('very_short', 'short', 'default') //validar os valores aceitos
+        .valid('very_short', 'short', 'default', 'complete') //validar os valores aceitos
         .required(),
     group_type: Joi.string().valid('minute', 'all').optional(),
     show_all: Joi.boolean().optional(),

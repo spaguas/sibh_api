@@ -73,10 +73,12 @@ const buildWhere = (params, query) =>{
 const buildJoin = (serializer_name, query)=>{
     if(['very_short','short'].includes(serializer_name)){                    
         query.join('station_prefixes', 'station_prefixes.id', 'measurements.station_prefix_id')
-    } else if(['default'].includes(serializer_name)){
+    } else if(['default', 'complete'].includes(serializer_name)){
         query.join('station_prefixes', 'station_prefixes.id', 'measurements.station_prefix_id')
             .join('stations', 'stations.id', 'station_prefixes.station_id')
             .join('cities', 'cities.id', 'stations.city_id')
+            .join('ugrhis', 'ugrhis.id', 'stations.ugrhi_id')
+            .join('subugrhis', 'subugrhis.id', 'stations.subugrhi_id')
             .join('transmission_types', 'transmission_types.id', 'measurements.transmission_type_id')
             .join('station_owners', 'station_owners.id', 'station_prefixes.station_owner_id')
     }
