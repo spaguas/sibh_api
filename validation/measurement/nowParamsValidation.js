@@ -17,7 +17,8 @@ const schema = Joi.object({
         is: 1,
         then: Joi.array().items(Joi.number().valid(2)).optional(),
         otherwise: Joi.forbidden()
-    })
+    }),
+    from_date: Joi.date().optional()
 })
 
 const handleValidation = async (params) =>{

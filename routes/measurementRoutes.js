@@ -49,14 +49,21 @@ router.get('/now', async(req, res)=>{
     
     let url = `raining_now_${options.station_type_id === '1' ? `flu` : "plu"}_${options.hours}_${options.group_type}_${options.serializer}_${options.public || "false"}`
     
-    let data = await scanList(url)
+    let data = []
+
+    if(!options.from_date){
+        data = await scanList(url)
+    }
     
     if(data.length == 0){         
         try{
 
             data = await getMeasurements(options)
             
-            writeList(url, data, 60)
+            if(!options.from_date){
+                writeList(url, data, 60)
+            }
+            
             
         } catch(e){
             console.log(e);
