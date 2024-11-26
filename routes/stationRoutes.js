@@ -13,7 +13,7 @@ router.get('/', async (req, res) => {
       res.send(data);
       return true
     } else {
-      response = await getStations({})
+      response = await getStations({serializer: 'complete'})
   
       try {
       

@@ -5,7 +5,7 @@ const serializer = {
         all_clean: ['id', 'prefix', 'alt_prefix', 'station_type_id', 'station_owner_id', 'operation_status', 'transmission_gap', 'measurement_gap', 'date_last_measurement', 'public', 'battery_linear'], //sem join, todas as colunas
         default: ['station_prefixes.id', 'alt_prefix', 'station_type_id', 'prefix', 'stations.name', 'station_types.name as station_type', 'stations.latitude', 'stations.longitude', 'cities.id as city_id',  'cities.name as city_name', 'cities.cod_ibge', 'ugrhis.id as ugrhi_id', 'ugrhis.name as ugrhi_name', 'ugrhis.cod as ugrhi_cod', 'subugrhis.name as subugrhi', 'station_owners.name as station_owner', 'station_owners.id as station_owner_id','date_last_measurement'], //com join, colunas necessárias para identificação e localização do posto,
         complete: ['station_prefixes.id', 'alt_prefix', 'prefix', 'station_type_id','stations.name', 'station_types.name as station_type', 
-            'stations.id as station_id', 'stations.latitude', 'stations.longitude', 'cities.id as city_id',  
+            'stations.id as station_id', 'stations.latitude', 'stations.longitude', 'cities.id as city_id',  'operation_status',
             'cities.name as city_name', 'cities.cod_ibge', 'ugrhis.id as ugrhi_id', 'ugrhis.name as ugrhi_name', 
             'ugrhis.cod as ugrhi_cod', 'subugrhis.name as subugrhi', 'station_owners.name as station_owner', 
             'station_owners.id as station_owner_id', 'date_last_measurement'], //com join, colunas necessárias para identificação e localização do posto + campos para análise,
