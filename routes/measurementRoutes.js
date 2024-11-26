@@ -1,6 +1,6 @@
 const express = require('express');
 const { getMeasurements, getParameters } = require('../config/database');
-const { scanList,writeList } = require('../servives/redisService');
+const { scanList,writeList } = require('../services/redisService');
 const { filterRainingNowData } = require('../models/measurementModel');
 const {handleValidation: nowValidation} = require('../validation/measurement/nowParamsValidation')
 const {handleValidation: measurementHandleValidation} = require('../validation/measurement/measurementParamsValidation')
@@ -47,7 +47,7 @@ router.get('/now', async(req, res)=>{
         return false
     }  
     
-    let url = `raining_now_${options.station_type_id === '1' ? `flu` : "plu"}_${options.hours}_${options.group_type}`
+    let url = `raining_now_${options.station_type_id === '1' ? `flu` : "plu"}_${options.hours}_${options.group_type}_${options.serializer}_${options.public || "false"}`
     
     let data = await scanList(url)
     

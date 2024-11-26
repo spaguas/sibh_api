@@ -1,5 +1,5 @@
 const express = require('express');
-const { scanKey, writeKey, filterData } = require('../servives/redisService');
+const { scanKey, writeKey, filterData } = require('../services/redisService');
 const { getStations } = require('../config/database');
 const router = express.Router();
 
