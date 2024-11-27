@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 
-const {getAlerts, insertAlert} = require('../config/alert_db')
+const {getAlerts, insertAlert} = require('../config/database/alert_db')
 
 router.get('/', async (req, res) => {
     let alerts = await getAlerts(req.query)
