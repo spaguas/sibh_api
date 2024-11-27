@@ -11,7 +11,7 @@ const { handleValidation: getParameterValidation} = require('../validation/param
 // const { additionalObjects: citiesAdditionalObjects} = require('../modules/cities');
 const { buildWhere: buildParameterWhere} = require('../models/parameterModel');
 
-const pg = require('./knex')
+const {pg} = require('./knex')
 
 
 const getStations = async (options = {}) =>{

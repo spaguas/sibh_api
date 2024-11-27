@@ -1,4 +1,4 @@
-const pg = require('../knex')
+const {pg} = require('../knex')
 const serializer = require('../../serializers/serializer')
 const {buildWhere} = require('../../models/alertModel')
 const {handleValidation: getAlertValidation} = require('../../validation/alert/getAlertParamsValidation')
