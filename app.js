@@ -6,6 +6,7 @@ const alertRoutes = require('./routes/alertRoutes')
 const stationRoutes = require('./routes/stationRoutes')
 const measurementRoutes = require('./routes/measurementRoutes')
 const lightningsRoutes = require('./routes/lightningRoutes')
+const newMeasurementRoutes = require('./routes/newMeasurementRoutes')
 const bodyParser = require('body-parser')
 // const IORedis = require('ioredis');
 
@@ -36,5 +37,6 @@ app.use('/alerts', alertRoutes)
 app.use('/stations', stationRoutes)
 app.use('/measurements', measurementRoutes)
 app.use('/lightnings', lightningsRoutes)
+app.use('/new_measurements', newMeasurementRoutes)
 
 module.exports = app
