@@ -28,7 +28,7 @@ const serializer = {
         default: ['id', 'alert_type_id', 'flag', 'date_hour', 'alertable_id', 'alertable_type', 'options', 'whatsapp_send', 'email_send', 'created_at', 'updated_at']
     },
     new_measurement:{
-        default: ['id', 'station_prefix_id', 'date_hour', 'values']
+        default: ['station_prefix_id']
     }
 }
 

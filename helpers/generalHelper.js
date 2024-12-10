@@ -9,6 +9,44 @@ const buildClause = (params, param_name, table_field_name, compare_type) =>{
     }
 }
 
+const JSONBAggregationString = (fields) =>{
+    return `jsonb_build_object(
+        ${fields.map(field=>{
+            return `
+            '${field}', 
+            jsonb_build_object(
+                'value', ${aggregationsFunctions[field]}((values->'${field}'->>'value')::float),
+                'qtd', COUNT((values->'${field}'->>'value')::float),
+                'max', MAX((values->'${field}'->>'value')::float),
+                'min', MIN((values->'${field}'->>'value')::float)
+            )
+            `
+        })}
+        
+    ) AS values`
+}
+
+const dateByGroupType = type =>{
+    return type === 'minute' ? "TO_CHAR(date_hour, 'YYYY/MM/DD HH24:MI') AS date" :
+    type === 'hour' ? "TO_CHAR(date_hour, 'YYYY/MM/DD HH24') AS date" :
+    type === 'day' ? "TO_CHAR(date_hour, 'YYYY/MM/DD') AS date" :
+    type === 'month' ? "TO_CHAR(date_hour, 'YYYY/MM') AS date" :
+    "TO_CHAR(date_hour, 'YYYY') AS date"
+}
+
+const aggregationsFunctions = {
+    rain: 'SUM',
+    ph: 'AVG',
+    temp: 'AVG',
+    oxygen: 'AVG',
+    turbidity: 'AVG',
+    conductivity: 'AVG',
+
+}
+
 module.exports = {
-    buildClause
+    buildClause,
+    aggregationsFunctions,
+    JSONBAggregationString,
+    dateByGroupType
 }

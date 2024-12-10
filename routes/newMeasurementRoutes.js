@@ -1,10 +1,14 @@
 
 const express = require('express');
 const { getMeasurements } = require('../config/database/new_measurements');
-const { handleValidation: handleValidation } = require('../validation/newMeasurement/newMeasurementParamsValidation')
+const { handleValidation: handleValidation } = require('../validation/newMeasurement/newMeasurementParamsValidation');
+const { JSONtoCSV } = require('../helpers/csvHelper');
 const router = express.Router();
 
 router.get('/', async (req, res) => { 
+
+    req.query.group_type = req.query.group_type || 'minute'
+    req.query.format = req.query.format || 'json'
 
     let validation = await handleValidation(req.query)
 
@@ -15,7 +19,14 @@ router.get('/', async (req, res) => {
 
     let response = await getMeasurements(req.query)
 
+    if(req.query.format === 'csv'){
+        response = JSONtoCSV(response)
+        res.header('Content-Type', 'text/csv');
+        res.attachment('sibh-data.csv');
+    } 
+
     res.send(response);
+    
 });
 
 module.exports = router

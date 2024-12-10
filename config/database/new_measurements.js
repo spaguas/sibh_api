@@ -1,16 +1,30 @@
 const { pg } = require("../knex")
 const {buildWhere} = require('../../models/newMeasurementModel')
 const serializer = require("../../serializers/serializer")
+const { JSONBAggregationString, dateByGroupType } = require("../../helpers/generalHelper")
 
 const getMeasurements = async (options = {}) =>{
-    let query = pg.table('new_measurements')
-    let fields = serializer.new_measurement.default
+    
+    let fields = [...serializer.new_measurement.default]
 
+    if(options.group_type != 'minute'){
+        fields.push(pg.raw(dateByGroupType(options.group_type)))
+        fields.push(pg.raw(JSONBAggregationString(['ph', 'rain', 'temp', 'oxygen', 'turbidity', 'conductivity'])))
+        
+    } else {
+        fields.push(pg.raw("date_hour as date, values"))
+    }
+
+    let query = pg.table('new_measurements')
     query.select(fields)
     
     buildWhere(options, query)
+    
+    if(options.group_type != 'minute'){
+        query.groupByRaw(['station_prefix_id, date'].join(','))
+    }
 
-    query.orderByRaw('date_hour desc')
+    query.orderByRaw('date desc')
 
     return query
 }

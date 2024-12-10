@@ -3,7 +3,9 @@ const Joi = require('joi');
 const schema = Joi.object({
     start_date: Joi.date().required(),
     end_date: Joi.date().required(),
-    station_prefix_ids: Joi.array().required()
+    station_prefix_ids: Joi.array().required(),
+    group_type: Joi.string().required(),
+    format: Joi.string().valid('json', 'csv').required()
 }).custom((value, helpers)=>{
     const {start_date, end_date} = value
     const diffInDays = (new Date(end_date) - new Date(start_date)) / (1000 * 60 * 60 * 24);
