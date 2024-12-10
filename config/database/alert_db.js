@@ -8,7 +8,7 @@ const moment = require('moment')
 const getAlerts = async (options = {}) =>{
     options.serializer = options.serializer || 'default'
 
-    let validation = await getAlertValidation(options)
+    let validation = await getAlertValidation(options) 
 
     if(validation.error && validation.error.details.length > 0){
         return validation.error
