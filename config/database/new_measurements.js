@@ -1,20 +1,18 @@
 const { pg } = require("../knex")
+const {buildWhere} = require('../../models/newMeasurementModel')
+const serializer = require("../../serializers/serializer")
 
-const getMeasurements = async () =>{
-    
+const getMeasurements = async (options = {}) =>{
     let query = pg.table('new_measurements')
-    
-    // buildWhere(options, query)  
-    
-    // query.whereRaw('latitude between -26.106681 and -18.890425 and longitude between -54.446606 and -41.525717') //bounds pouco maior que o estado de SP
-    // query.whereRaw("datetime >= now() - interval '1 hour'")
-    // query.whereRaw("quality_control_atd <= 1")
+    let fields = serializer.new_measurement.default
 
-    // query.orderByRaw('datetime desc')
+    query.select(fields)
+    
+    buildWhere(options, query)
+
+    query.orderByRaw('date_hour desc')
 
     return query
-    
-
 }
 
 module.exports = {
