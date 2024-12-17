@@ -7,6 +7,7 @@ const stationRoutes = require('./routes/stationRoutes')
 const measurementRoutes = require('./routes/measurementRoutes')
 const lightningsRoutes = require('./routes/lightningRoutes')
 const ugrhisRoutes = require('./routes/ugrhiRoutes')
+const subugrhisRoutes = require('./routes/subugrhiRoutes')
 const newMeasurementRoutes = require('./routes/newMeasurementRoutes')
 const bodyParser = require('body-parser')
 // const IORedis = require('ioredis');
@@ -40,5 +41,6 @@ app.use('/measurements', measurementRoutes)
 app.use('/lightnings', lightningsRoutes)
 app.use('/new_measurements', newMeasurementRoutes)
 app.use('/ugrhis', ugrhisRoutes)
+app.use('/subugrhis', subugrhisRoutes)
 
 module.exports = app

@@ -1,22 +1,22 @@
 const serializer = require("../../serializers/serializer")
 const { pg } = require("../knex")
 
-const getUgrhis = async (options = {}) =>{
+const getSubugrhis = async (options = {}) =>{
 
     options.serializer = options.serializer || 'default'
 
-    let fields = serializer.ugrhi[options.serializer]
+    let fields = serializer.subugrhi[options.serializer]
 
-    let query = pg.table('ugrhis')
+    let query = pg.table('subugrhis')
 
     query.select(fields)
     
-    query.whereRaw("cod != 99")
+    query.whereRaw("cod != 9999")
 
     return query
 
 }
 
 module.exports = {
-    getUgrhis
+    getSubugrhis
 }

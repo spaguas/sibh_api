@@ -32,6 +32,9 @@ const serializer = {
     },
     ugrhi:{
         default: ['id', 'cod', 'name']
+    },
+    subugrhi:{
+        default: ['id', 'cod', 'name', 'ugrhi_id']
     }
 }
 
