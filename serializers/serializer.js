@@ -29,6 +29,9 @@ const serializer = {
     },
     new_measurement:{
         default: ['station_prefix_id']
+    },
+    ugrhi:{
+        default: ['id', 'cod', 'name']
     }
 }
 
