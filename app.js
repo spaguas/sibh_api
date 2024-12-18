@@ -9,16 +9,15 @@ const lightningsRoutes = require('./routes/lightningRoutes')
 const ugrhisRoutes = require('./routes/ugrhiRoutes')
 const subugrhisRoutes = require('./routes/subugrhiRoutes')
 const newMeasurementRoutes = require('./routes/newMeasurementRoutes')
-const bodyParser = require('body-parser')
-// const IORedis = require('ioredis');
+const bodyParser = require('body-parser');
+const { corsOptions } = require('./config/cors');
 
 const app = express();
 require('dotenv').config()
 
-
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use(cors())
+app.use(cors(corsOptions))
 
 
 app.get('/cities', async (req, res) => {
