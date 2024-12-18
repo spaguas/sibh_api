@@ -13,7 +13,7 @@ router.get('/', async (req, res) => {
     }
 
     res.send({
-        ugrhis: subugrhis, 
+        subugrhis: subugrhis, 
         ...(parameters ? {parameters:parameters} : {}) //só se for solicitado
     })
 });
