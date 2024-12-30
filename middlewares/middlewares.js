@@ -22,7 +22,7 @@ const FIXED_TOKEN = 'DIEGO'
 const checkOriginIP = (req) => {
   let clientIP = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
   clientIP = clientIP.replaceAll('::ffff:', '');
-  console.log(clientIP);
+  console.log(clientIP, req.connection.remoteAddress);
   
   return corsAllowedOrigins.includes(clientIP);
 };
