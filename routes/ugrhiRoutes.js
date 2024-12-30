@@ -2,8 +2,9 @@ const { getParameters } = require('../config/database');
 const {getUgrhis} = require('../config/database/ugrhi_db')
 const express = require('express');
 const router = express.Router();
+const {validateAccess} = require('../middlewares/middlewares')
 
-router.get('/', async (req, res) => {
+router.get('/', validateAccess, async (req, res) => {
 
     let ugrhis = await getUgrhis(req.query)
 
