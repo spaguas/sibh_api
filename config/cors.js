@@ -13,6 +13,8 @@ const corsOptions = {
 const restrictedCors = {
     origin: (origin, callback) => {        
         //APENAS ORIGINS ESPECIFICAS OU SE FOR DEV..
+        console.log('ORIGIN', origin);
+        
         if (corsAllowedOrigins.split(',').includes(origin) || ENV === 'development') {
           callback(null, true);
         } else {

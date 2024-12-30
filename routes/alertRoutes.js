@@ -4,8 +4,9 @@ const cors = require('cors')
 
 const {getAlerts, insertAlert} = require('../config/database/alert_db')
 const {restrictedCors} = require('../config/cors')
+const checkOrigins = require('../middlewares/checkOrigin')
 
-router.get('/', cors(restrictedCors), async (req, res) => {
+router.get('/', checkOrigins, async (req, res) => {
     let alerts = await getAlerts(req.query)
     res.send(alerts);
 });
