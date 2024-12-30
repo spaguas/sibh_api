@@ -29,5 +29,4 @@ const restrictedCors = {
 
 module.exports = {
     corsOptions,
-    restrictedCors,
 }
