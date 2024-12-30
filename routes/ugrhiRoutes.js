@@ -13,10 +13,11 @@ router.get('/', async (req, res) => {
         parameters = await getParameters({parameterizable_type: 'Ugrhi', parameter_type_ids: req.query.parameter_type_ids})
     }
 
-    res.send({
-        ugrhis: ugrhis, 
-        ...(parameters ? {parameters:parameters} : {}) //só se for solicitado
-    })
+    // res.send({
+    //     ugrhis: ugrhis, 
+    //     ...(parameters ? {parameters:parameters} : {}) //só se for solicitado
+    // })
+    res.send(ugrhis)
 });
 
 module.exports = router
