@@ -1,9 +1,11 @@
 const express = require('express');
 const router = express.Router();
+const cors = require('cors')
 
 const {getAlerts, insertAlert} = require('../config/database/alert_db')
+const {restrictedCors} = require('../config/cors')
 
-router.get('/', async (req, res) => {
+router.get('/', cors(restrictedCors), async (req, res) => {
     let alerts = await getAlerts(req.query)
     res.send(alerts);
 });
