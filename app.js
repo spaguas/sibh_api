@@ -9,6 +9,7 @@ const lightningsRoutes = require('./routes/lightningRoutes')
 const ugrhisRoutes = require('./routes/ugrhiRoutes')
 const subugrhisRoutes = require('./routes/subugrhiRoutes')
 const newMeasurementRoutes = require('./routes/newMeasurementRoutes')
+const authRoutes = require('./routes/auth')
 const bodyParser = require('body-parser');
 const { corsOptions } = require('./config/cors');
 
@@ -41,5 +42,6 @@ app.use('/lightnings', lightningsRoutes)
 app.use('/new_measurements', newMeasurementRoutes)
 app.use('/ugrhis', ugrhisRoutes)
 app.use('/subugrhis', subugrhisRoutes)
+app.use('/auth', authRoutes)
 
 module.exports = app

@@ -35,6 +35,9 @@ const serializer = {
     },
     subugrhi:{
         default: ['id', 'cod', 'name', 'ugrhi_id']
+    },
+    user:{
+        default: ['id', 'email', 'name', 'encrypted_password']
     }
 }
 
