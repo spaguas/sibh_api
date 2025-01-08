@@ -10,20 +10,27 @@ const buildClause = (params, param_name, table_field_name, compare_type) =>{
 }
 
 const JSONBAggregationString = (fields) =>{
-    return `jsonb_build_object(
-        ${fields.map(field=>{
-            return `
-            '${field}', 
-            jsonb_build_object(
-                'value', ${aggregationsFunctions[field]}((values->'${field}'->>'value')::float),
-                'qtd', COUNT((values->'${field}'->>'value')::float),
-                'max', MAX((values->'${field}'->>'value')::float),
-                'min', MIN((values->'${field}'->>'value')::float)
-            )
-            `
-        })}
+    // return `jsonb_build_object(
+    //     ${fields.map(field=>{
+    //         return `
+    //         '${field}', 
+    //         jsonb_build_object(
+    //             'value', ${aggregationsFunctions[field]}((values->'${field}'->>'value')::float),
+    //             'qtd', COUNT((values->'${field}'->>'value')::float),
+    //             'max', MAX((values->'${field}'->>'value')::float),
+    //             'min', MIN((values->'${field}'->>'value')::float)
+    //         )
+    //         `
+    //     })}
         
-    ) AS values`
+    // ) AS values`
+    return `jsonb_build_object(
+        'avg', AVG((values->'value'->>'value')::float),
+        'sum', SUM((values->'value'->>'value')::float),
+        'qtd', COUNT((values->'value'->>'value')::float),
+        'max', MAX((values->'value'->>'value')::float),
+        'min', MIN((values->'value'->>'value')::float)
+    ) as values`
 }
 
 const dateByGroupType = type =>{

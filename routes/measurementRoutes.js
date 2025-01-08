@@ -3,7 +3,9 @@ const { getMeasurements, getParameters } = require('../config/database');
 const { scanList,writeList } = require('../services/redisService');
 const { filterRainingNowData } = require('../models/measurementModel');
 const {handleValidation: nowValidation} = require('../validation/measurement/nowParamsValidation')
+const {handleValidation: fromCityValidation} = require('../validation/measurement/fromCityParamsValidation')
 const {handleValidation: measurementHandleValidation} = require('../validation/measurement/measurementParamsValidation')
+
 const router = express.Router();
 
 router.get('/', async (req, res) => {
@@ -27,7 +29,7 @@ router.get('/', async (req, res) => {
         let references
         if(options['parameter_type_ids']){
           references = await getParameters({parameterizable_type: 'StationPrefix', parameterizable_ids: options.station_prefix_ids, parameter_type_ids: options.parameter_type_ids})
-        }1
+        }
         res.send({measurements: response, references: references});
     } catch (e){
     res.status(500)
@@ -92,6 +94,36 @@ router.get('/now', async(req, res)=>{
     res.status(200)
     res.send({measurements: data, references: references && references.length > 0 ? references : {}})
 
+    return true
+})
+
+router.get('/from_city', async(req, res)=>{
+    let options = req.query
+    options.serializer = options.serializer || 'default' //default value
+    options.group_type = options.group_type || 'all' //default value
+    
+    let validation = await fromCityValidation(options) //validando parâmetros
+        
+    if(validation.error && validation.error.details.length > 0){
+        res.status(500)
+        res.send(validation.error)
+        return false
+    }
+    
+    try{
+
+        let response = await getMeasurements(options)
+        if(response.details){
+            res.status(400)
+        }
+        res.send({measurements: response});
+        
+        
+    } catch(e){
+        console.log(e);
+        
+        res.status(500)
+    }
     return true
 })
 

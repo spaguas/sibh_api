@@ -39,9 +39,7 @@ const filterRainingNowData = (data, params) =>{
 }
 
 const buildWhere = (params, query) =>{
-    let whereRaw = ["value != 'NaN'"]
-    console.log(params);
-    
+    let whereRaw = ["value != 'NaN'"]    
 
     const buildClause = (param_name, table_field_name, compare_type) =>{
         let value = params[param_name]
@@ -56,7 +54,6 @@ const buildWhere = (params, query) =>{
                 value = compare_type === 'like' ? `'%${value}%'` :  compare_type === 'in' ? `(${value})` : `'${value}'`
                 whereRaw.push(`${table_field_name} ${compare_type} ${value}`)
             }
-
             
         }
     }
@@ -67,24 +64,40 @@ const buildWhere = (params, query) =>{
     buildClause('hours', 'measurements.date_hour', '<=')
     buildClause('station_type_id', 'station_prefixes.station_type_id', '=')
     buildClause('public', 'station_prefixes.public', '=')
+    buildClause('cod_ibge', 'cities.cod_ibge', '=')
+    buildClause('station_owner_ids', 'station_prefixes.station_owner_id', 'in')
+    buildClause('param_type', 'measurements.param_type', '=')
 
     if(whereRaw){
         query.whereRaw(whereRaw.join(' and '))
     }
 }
 
-const buildJoin = (serializer_name, query)=>{
+const buildJoin = (serializer_name, query, options={})=>{
+    let joins = {}
+    if(options.cod_ibge){
+        joins['station_prefixes'] = ['station_prefixes.id', 'measurements.station_prefix_id']
+        joins['stations'] = ['stations.id', 'station_prefixes.station_id']
+        joins['cities'] = ['cities.id', 'stations.city_id']
+    } 
     if(['very_short','short'].includes(serializer_name)){                    
-        query.join('station_prefixes', 'station_prefixes.id', 'measurements.station_prefix_id')
-    } else if(['default', 'complete'].includes(serializer_name)){
-        query.join('station_prefixes', 'station_prefixes.id', 'measurements.station_prefix_id')
-            .join('stations', 'stations.id', 'station_prefixes.station_id')
-            .join('cities', 'cities.id', 'stations.city_id')
-            .join('ugrhis', 'ugrhis.id', 'stations.ugrhi_id')
-            .join('subugrhis', 'subugrhis.id', 'stations.subugrhi_id')
-            .join('transmission_types', 'transmission_types.id', 'measurements.transmission_type_id')
-            .join('station_owners', 'station_owners.id', 'station_prefixes.station_owner_id')
+        joins['station_prefixes'] = ['station_prefixes.id', 'measurements.station_prefix_id']
+    } 
+    if(['default', 'complete'].includes(serializer_name)){
+        joins['station_prefixes'] = ['station_prefixes.id', 'measurements.station_prefix_id']
+        joins['stations'] = ['stations.id', 'station_prefixes.station_id']
+        joins['cities'] = ['cities.id', 'stations.city_id']
+        joins['ugrhis'] = ['ugrhis.id', 'stations.ugrhi_id']
+        joins['subugrhis'] = ['subugrhis.id', 'stations.subugrhi_id']
+        joins['transmission_types'] = ['transmission_types.id', 'measurements.transmission_type_id']
+        joins['station_owners'] = ['station_owners.id', 'station_prefixes.station_owner_id']
     }
+    if(options.station_owner_ids){
+        joins['station_prefixes'] = ['station_prefixes.id', 'measurements.station_prefix_id']
+    }
+    Object.keys(joins).map(table=>{
+        query.join(table, joins[table][0], joins[table][1])
+    })
 }
 
 const buildGroupBy = (query, serializer_name,group_type) =>{
