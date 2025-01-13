@@ -1,6 +1,6 @@
 const express = require('express');
 const { scanKey, writeKey, filterData } = require('../services/redisService');
-const { getStations } = require('../config/database');
+const { getStations,getStation } = require('../config/database');
 const router = express.Router();
 
 router.get('/', async (req, res) => {
@@ -40,6 +40,12 @@ router.get('/', async (req, res) => {
     
     res.send(data);
     
-  });
+});
+
+router.get('/:id', async (req, res)=>{
+  response = await getStation(req.params.id)
+
+  res.send(response)
+})
 
 module.exports = router

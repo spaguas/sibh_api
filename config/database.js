@@ -12,6 +12,24 @@ const { buildWhere: buildParameterWhere} = require('../models/parameterModel');
 
 const {pg} = require('./knex')
 
+const getStation = async (id) =>{
+    let serializer_name = 'complete'
+    let fields = serializer.station[serializer_name]
+    fields.push(pg.raw("CASE WHEN transmission_status = 0 THEN 'ok' ELSE 'pendente' END AS transmission_status"))
+
+    let query = pg.table('station_prefixes').select(fields)
+
+    query.join('stations', 'stations.id', 'station_prefixes.station_id')
+            .join('cities', 'cities.id', 'stations.city_id')
+            .join('ugrhis', 'ugrhis.id', 'stations.ugrhi_id')
+            .join('subugrhis', 'subugrhis.id', 'stations.subugrhi_id')
+            .join('station_types', 'station_types.id', 'station_prefixes.station_type_id')
+            .join('station_owners', 'station_owners.id', 'station_prefixes.station_owner_id')
+    
+    query = await query.whereRaw("station_prefixes.id = ?", id).limit(1)
+
+    return query
+}
 
 const getStations = async (options = {}) =>{
     
@@ -23,7 +41,7 @@ const getStations = async (options = {}) =>{
         fields.push(pg.raw("CASE WHEN transmission_status = 0 THEN 'ok' ELSE 'pendente' END AS transmission_status"))
     }
 
-    let query = pg.table('station_prefixes').select(fields)    
+    let query = pg.table('station_prefixes').select(fields)
     
 
     if(['default', 'complete'].includes(serializer_name)){                    
@@ -135,5 +153,6 @@ module.exports = {
     getStations,
     getMeasurements,
     getParameters,
-    newParameters
+    newParameters,
+    getStation
 }
