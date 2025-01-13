@@ -35,9 +35,9 @@ const getCities = async (options = {}) =>{
 
 const getCityUgrhis = async (options = {}) =>{
 
-    let fields = ['cod_ibge', 'city_name', pg.raw("STRING_AGG(ugrhi_cod::text,', ')")]
+    let fields = ['city_cod', 'city_name', pg.raw("STRING_AGG(ugrhi_cod::text,', ')")]
 
-    let query = pg.table('maps.city_ugrhis').select(fields).groupByRaw('cod_ibge,city_name')    
+    let query = pg.table('maps.city_ugrhis_complete').select(fields).groupByRaw('city_cod,city_name')  
 
     return query
 }
