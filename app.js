@@ -8,6 +8,7 @@ const measurementRoutes = require('./routes/measurementRoutes')
 const lightningsRoutes = require('./routes/lightningRoutes')
 const ugrhisRoutes = require('./routes/ugrhiRoutes')
 const subugrhisRoutes = require('./routes/subugrhiRoutes')
+const cityRoutes = require('./routes/cityRoutes')
 const newMeasurementRoutes = require('./routes/newMeasurementRoutes')
 const authRoutes = require('./routes/auth')
 const bodyParser = require('body-parser');
@@ -20,20 +21,6 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cors(corsOptions))
 
-
-app.get('/cities', async (req, res) => {
-  let response  
-  try{
-    response = await getCities(req.query)
-  } catch(e){
-    console.log(e);
-    
-    res.status(500)
-  }
-  
-  res.send(response);
-});
-
 app.use('/', parameterRoutes)
 app.use('/alerts', alertRoutes)
 app.use('/stations', stationRoutes)
@@ -43,5 +30,6 @@ app.use('/new_measurements', newMeasurementRoutes)
 app.use('/ugrhis', ugrhisRoutes)
 app.use('/subugrhis', subugrhisRoutes)
 app.use('/auth', authRoutes)
+app.use('/cities', cityRoutes)
 
 module.exports = app
