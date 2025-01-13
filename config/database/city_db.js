@@ -37,7 +37,7 @@ const getCityUgrhis = async (options = {}) =>{
 
     let fields = ['city_cod', 'city_name', pg.raw("STRING_AGG(ugrhi_cod::text,', ')")]
 
-    let query = pg.table('maps.city_ugrhis_complete').select(fields).groupByRaw('city_cod,city_name')  
+    let query = pg.table('maps.city_ugrhis_complete').select(fields).whereRaw('area_km2 > 3').groupByRaw('city_cod,city_name')  
 
     return query
 }
