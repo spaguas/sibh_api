@@ -26,7 +26,7 @@ const getStation = async (id) =>{
             .join('station_types', 'station_types.id', 'station_prefixes.station_type_id')
             .join('station_owners', 'station_owners.id', 'station_prefixes.station_owner_id')
     
-    query = await query.whereRaw("station_prefixes.id = ?", id).limit(1)
+    query = await query.whereRaw("station_prefixes.id = ?", id).first()
 
     return query
 }
