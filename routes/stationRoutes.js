@@ -1,25 +1,24 @@
 const express = require('express');
-const { scanKey, writeKey, filterData } = require('../services/redisService');
+const { scanKey, writeKey, filterData,scanList,writeList } = require('../services/redisService');
 const { getStations,getStation } = require('../config/database');
+const { appendParametersOfStations,appendParametersOfStation } = require('../models/stationModel');
+const { getParameters } = require('../config/database/parameter_db');
 const router = express.Router();
 
 router.get('/', async (req, res) => {
 
     let data = await scanKey('prefix_*')
-    let response
   
     if(data.length > 0){    
       data = filterData(data, req.query)
-      res.send(data);
-      return true
     } else {
-      response = await getStations({serializer: 'complete'})
+      data = await getStations({serializer: 'complete'})
   
       try {
       
-        for(let i = 0; i< response.length; i++){
+        for(let i = 0; i< data.length; i++){
     
-          let station = response[i]
+          let station = data[i]
           writeKey(`prefix_${station.id}`, station, 300)
     
         }
@@ -30,22 +29,32 @@ router.get('/', async (req, res) => {
         return true
       }
     }
-  
-    try{
-      data = filterData(response, req.query)
-    } catch(e){
-      console.log(e);
-      res.status(500)
+
+    if(req.query.parameter_type_ids?.length > 0){
+      let references = await scanList(`station_prefix_references_${req.query.parameter_type_ids}`)
+        
+      if(references?.length == 0){
+          console.log('não tem, buscando referencias');
+          
+          references = await getParameters({parameterizable_type: 'StationPrefix', parameter_type_ids: req.query.parameter_type_ids})
+
+          writeList(`station_prefix_references_${req.query.parameter_type_ids}`, references, 300)
+      }
+
+      data.map(x=>x.references = references.filter(y=>y.parameterizable_id === x.id))
     }
     
     res.send(data);
+    return true
     
 });
 
 router.get('/:id', async (req, res)=>{
-  response = await getStation(req.params.id)
+  data = await getStation(req.params.id)
 
-  res.send(response)
+  data = await appendParametersOfStation(data, req.params.id)
+
+  res.send(data)
 })
 
 module.exports = router

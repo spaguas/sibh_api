@@ -1,3 +1,5 @@
+// const { getMeasurements, getParameters } = require('../config/database');
+const {getParameters} = require('../config/database/parameter_db')
 const { buildClause } = require("../helpers/generalHelper")
 
 const buildWhere = (params, query) =>{
@@ -25,13 +27,24 @@ const buildWhere = (params, query) =>{
     }
 }
 
-const buildRedisWhere = () =>{
+const appendParametersOfStation = async (data, station_id) =>{
+    console.log(getParameters);
+    
+    let parameters = await getParameters({parameterizable_type: 'StationPrefix', parameterizable_ids: [station_id]})
+        
+    data.parameters = parameters
 
+    return data
+}
+
+const appendParametersOfStations = async (data, params) =>{
+    
 }
 
 
 
 module.exports = {
     buildWhere,
-    buildRedisWhere
+    appendParametersOfStation,
+    appendParametersOfStations
 }
