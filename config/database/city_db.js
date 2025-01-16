@@ -35,9 +35,18 @@ const getCities = async (options = {}) =>{
 
 const getCityUgrhis = async (options = {}) =>{
 
-    let fields = ['city_cod', 'city_name', pg.raw("STRING_AGG(ugrhi_cod::text,', ')")]
+    let fields = ['city_cod', 'city_name', 'city_id', pg.raw("STRING_AGG(ugrhi_cod::text,', ')")]
 
-    let query = pg.table('maps.city_ugrhis_complete').select(fields).whereRaw('area_km2 > 3').groupByRaw('city_cod,city_name')  
+    let query = pg.table('maps.city_ugrhis').select(fields).whereRaw('area_km2 > 3').groupByRaw('city_cod, city_id,city_name')  
+
+    query = await query
+
+    if(options.parameter_type_ids && options.parameter_type_ids.length > 0){   
+        
+        let parameters = await getParameters({parameterizable_type: 'City', parameter_type_ids: options.parameter_type_ids})
+        
+        query.map(city=> city.parameters = parameters.filter(x=> x.parameterizable_type === 'City' && x.parameterizable_id === city.city_id ))
+    }
 
     return query
 }
