@@ -9,7 +9,7 @@ router.get('/', async (req, res) => {
 
     let data = await scanKey('prefix_*')
   
-    if(data.length > 0){    
+    if(data.length > 0){       
       data = filterData(data, req.query)
     } else {
       data = await getStations({serializer: 'complete'})
@@ -19,9 +19,12 @@ router.get('/', async (req, res) => {
         for(let i = 0; i< data.length; i++){
     
           let station = data[i]
-          writeKey(`prefix_${station.id}`, station, 300)
+          writeKey(`prefix_${station.id}`, station, 600)
     
         }
+
+        data = filterData(data, req.query)
+        
       } catch(e){
         console.log(e);
         
