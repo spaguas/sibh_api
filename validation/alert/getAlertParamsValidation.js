@@ -11,7 +11,7 @@ const schema = Joi.object({
     }).greater(Joi.ref('start_date')),    
     serializer: Joi.string().required(),
     alertable_type: Joi.string().optional(),
-    alertable_id: Joi.string().optional(),
+    alertable_id: Joi.number().optional(),
     alert_type_id: Joi.number().valid(1).optional(),
 })
 
