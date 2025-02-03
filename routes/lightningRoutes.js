@@ -10,7 +10,7 @@ router.get('/last_lightnings', async (req, res) => {
 });
 
 router.get('/last_lightnings/baixada', async (req, res) => {  
-    let response = await getLightnings([-45.145719, -23.019560, -47.194670, -24.607547])
+    let response = await getLightnings([-24.687430, -23.400726, -47.186430, -44.728239])
     res.send(response);
 });
 
