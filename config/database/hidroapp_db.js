@@ -26,9 +26,9 @@ const getHidroAppData = async (options={}) =>{
 
     query = await query
 
-    objects = await getAdditionalObjects(query)
+    // objects = await getAdditionalObjects(query)
 
-    return {data: query, ...objects}
+    return {data: query}
 
 }
 
