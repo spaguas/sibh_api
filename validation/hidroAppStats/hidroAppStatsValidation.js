@@ -12,8 +12,20 @@ const schema = Joi.object({
         is: Joi.exist(),
         then: Joi.required(),
         otherwise: Joi.forbidden()
-    })
+    }).greater(Joi.ref('start_date'))
+}).custom((value, helpers)=>{
+    const {start_date, end_date} = value
+    const diffInDays = (new Date(end_date) - new Date(start_date)) / (1000 * 60 * 60 * 24);
+
+    if (diffInDays > 365) {
+        return helpers.error('custom.maxDays', { diffInDays });
+    }
+
+    return value
+}).messages({
+    'custom.maxDays': 'A diferença entre start_date e end_date não pode exceder 365 dias'
 })
+
 
 const handleValidation = async (params) =>{
     let validation = await validate(params)
