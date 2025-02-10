@@ -2,7 +2,8 @@ const Joi = require('joi');
 
 const schema = Joi.object({
     cod_ibge: Joi.string(),
-    parameter_type_ids: Joi.array()
+    parameter_type_ids: Joi.array(),
+    ids: Joi.array(),
 })
 
 const handleValidation = async (params) =>{

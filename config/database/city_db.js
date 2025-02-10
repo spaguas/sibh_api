@@ -29,6 +29,9 @@ const getCities = async (options = {}) =>{
         query.map(city=>city.parameters = parameters.filter(x=> x.parameterizable_type === 'City' && x.parameterizable_id === city.id))
     }
 
+    
+    
+
     return query
 
 }
