@@ -17,7 +17,7 @@ const schema = Joi.object({
     const {start_date, end_date} = value
     const diffInDays = (new Date(end_date) - new Date(start_date)) / (1000 * 60 * 60 * 24);
 
-    if (diffInDays > 365) {
+    if (diffInDays > 366) {
         return helpers.error('custom.maxDays', { diffInDays });
     }
 
