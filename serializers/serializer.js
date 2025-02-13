@@ -40,7 +40,7 @@ const serializer = {
         default: ['id', 'email', 'name', 'encrypted_password']
     },
     hidroapp:{
-        default: ['id', 'model_type', 'model_id', 'date_hour', 'rain', 'spi_6']
+        default: ['id', 'model_type', 'model_id', 'date_hour', 'rain', 'spi_6', 'dm']
     }
 }
 
