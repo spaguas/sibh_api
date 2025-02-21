@@ -6,7 +6,7 @@ const schema = Joi.object({
         then: Joi.optional(),
         otherwise: Joi.required()
     }),
-    model_types: Joi.array().items(Joi.string().valid('City', 'Ugrhi')).required(),
+    model_types: Joi.array().items(Joi.string().valid('City', 'Ugrhi', 'Subugrhi')).required(),
     start_date: Joi.date().optional(),
     end_date: Joi.date().when('start_date', {
         is: Joi.exist(),
