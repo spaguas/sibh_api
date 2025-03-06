@@ -14,12 +14,16 @@ const buildWhere = (params, query) =>{
     }
 }
 
-const buildJoin = (params, query) =>{
-    // if(params.cod_ibge){                    
-    query.join('cities', 'cities.id', 'hidroapp_statistics.model_id')
-    query.join('stations', 'stations.id', 'station_prefixes.station_id')
-    query.join('cities', 'cities.id', 'stations.city_id')
-    // }
+const buildWhereView = (params, query) =>{
+    let whereRaw = []
+    //construindo cláusulas analisadoras dos parâmetros passados
+    whereRaw.push(buildClause(params,'model_type', 'hidroapp_statistics_view.model_type', '='))
+    whereRaw.push(buildClause(params,'model_id', 'hidroapp_statistics_view.model_id', '='))
+    whereRaw.push(buildClause(params,'month', 'hidroapp_statistics_view.month', '='))
+
+    if(whereRaw && whereRaw.length > 0){
+        query.whereRaw(whereRaw.filter(x=>x).join(' and '))
+    }
 }
 
 const getAdditionalObjects =  async (query) =>{
@@ -46,5 +50,6 @@ const getAdditionalObjects =  async (query) =>{
 
 module.exports = {
     getAdditionalObjects,
-    buildWhere
+    buildWhere,
+    buildWhereView
 }

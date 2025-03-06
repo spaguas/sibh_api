@@ -41,6 +41,9 @@ const serializer = {
     },
     hidroapp:{
         default: ['id', 'model_type', 'model_id', 'date_hour', 'rain', 'spi_6', 'dm', 'ndvi', 'temp']
+    },
+    hidroappview:{
+        default: ['model_type', 'model_id', 'month', 'spi_6_max', 'spi_6_min', 'spi_6_avg', 'ndvi_avg', 'ndvi_max', 'ndvi_min', 'rain_avg', 'rain_max', 'rain_min', 'dm_avg', 'dm_max', 'dm_min', 'temp_avg','temp_max', 'temp_min', 'temp_max_max', 'temp_max_min', 'temp_max_avg', 'temp_min_max', 'temp_min_min', 'temp_min_avg']
     }
 }
 

@@ -1,8 +1,9 @@
 const serializer = require("../../serializers/serializer")
-const {getAdditionalObjects, buildWhere} = require('../../models/hidroappModel')
+const {buildWhere,buildWhereView} = require('../../models/hidroappModel')
 const { pg } = require("../knex")
 const { options } = require("joi")
 const { handleValidation: hidroStatsValidation } = require("../../validation/hidroAppStats/hidroAppStatsValidation")
+const { handleValidation: hidroStatsViewValidation } = require("../../validation/hidroAppStats/hidroAppStatsViewValidation")
 
 const getHidroAppData = async (options={}) =>{
     
@@ -14,9 +15,7 @@ const getHidroAppData = async (options={}) =>{
 
     if(validation.error && validation.error.details.length > 0){
         return validation.error
-    }   
-
-    // buildJoin(options, query)
+    }
 
     buildWhere(options, query)
 
@@ -26,12 +25,33 @@ const getHidroAppData = async (options={}) =>{
 
     query = await query
 
-    // objects = await getAdditionalObjects(query)
-
     return {data: query}
 
 }
 
+const getHidroAppViewData = async (options={}) =>{
+    let fields = [...serializer.hidroappview.default]
+
+    let query = pg.table('hidroapp_statistics_view')
+
+    let validation = await hidroStatsViewValidation(options)
+
+    if(validation.error && validation.error.details.length > 0){
+        return validation.error
+    }
+
+    buildWhereView(options, query)
+
+    query.select(fields)
+    
+    query.orderByRaw('model_id')    
+
+    query = await query
+
+    return {data: query}
+}
+
 module.exports = {
-    getHidroAppData
+    getHidroAppData,
+    getHidroAppViewData
 }
