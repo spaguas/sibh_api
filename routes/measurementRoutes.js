@@ -4,7 +4,8 @@ const { scanList,writeList } = require('../services/redisService');
 const { filterRainingNowData } = require('../models/measurementModel');
 const {handleValidation: nowValidation} = require('../validation/measurement/nowParamsValidation')
 const {handleValidation: fromCityValidation} = require('../validation/measurement/fromCityParamsValidation')
-const {handleValidation: measurementHandleValidation} = require('../validation/measurement/measurementParamsValidation')
+const {handleValidation: measurementHandleValidation} = require('../validation/measurement/measurementParamsValidation');
+const { getNowMeasurementsFlu } = require('../config/database/measurements');
 
 const router = express.Router();
 
@@ -35,6 +36,16 @@ router.get('/', async (req, res) => {
     res.status(500)
     }
 });
+
+router.get('/now_flu', async(req, res)=>{
+    let options = req.query
+    let data = []
+
+    data = await getNowMeasurementsFlu(options)
+
+    res.send({measurements: data});
+
+})
 
 router.get('/now', async(req, res)=>{
     let options = req.query
