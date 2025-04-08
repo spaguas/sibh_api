@@ -48,7 +48,7 @@ const getNowMeasurementsFlu = async (options) =>{
     query.whereRaw(`station_prefixes.station_type_id = 1`)
     query.whereRaw("date_hour >= now() - interval '1 day'")
 
-    query.orderByRaw('measurements.station_prefix_id desc')
+    query.orderByRaw('measurements.station_prefix_id, measurements.date_hour desc')
 
     console.log(query.toSQL());
 
