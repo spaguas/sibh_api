@@ -5,7 +5,7 @@ const { filterRainingNowData } = require('../models/measurementModel');
 const {handleValidation: nowValidation} = require('../validation/measurement/nowParamsValidation')
 const {handleValidation: fromCityValidation} = require('../validation/measurement/fromCityParamsValidation')
 const {handleValidation: measurementHandleValidation} = require('../validation/measurement/measurementParamsValidation');
-const { getNowMeasurementsFlu } = require('../config/database/measurements');
+const { getNowMeasurementsFlu, newMeasurementWD } = require('../config/database/measurements');
 
 const router = express.Router();
 
@@ -136,6 +136,11 @@ router.get('/from_city', async(req, res)=>{
         res.status(500)
     }
     return true
+})
+
+router.post('/new/webservice_data', async (req, res)=>{
+    let data = await newMeasurementWD(req.body)
+    res.send(data)
 })
 
 module.exports = router

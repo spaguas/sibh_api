@@ -1,5 +1,6 @@
-const { pg } = require("../knex")
+const { pg, pgWD } = require("../knex")
 const { handleValidation} = require('../../validation/measurement/nowFluParamsValidation')
+const { handleValidation: WDMeasurementValidation} = require('../../validation/measurement/newMeasurementWDValidation')
 
 const getNowMeasurementsFlu = async (options) =>{
     
@@ -57,6 +58,29 @@ const getNowMeasurementsFlu = async (options) =>{
     
 }
 
+const newMeasurementWD = async (options) =>{
+    let validation = await WDMeasurementValidation(options)
+
+    let query = pgWD.table('measurements')
+
+    if(validation.error && validation.error.details.length > 0){
+        return validation.error
+    }
+
+    try{
+        await query.insert(options).returning('*');
+
+        console.log('Medição cadastrada')
+        return {message: 'Alerta criado com sucesso', status:200}
+
+    } catch (e){
+        console.log('Erro ao criar medição webservicedata', e)
+        return {message: 'Erro ao criar medição', error: e.detail, status:500}
+    }
+
+}
+
 module.exports = {
-    getNowMeasurementsFlu
+    getNowMeasurementsFlu,
+    newMeasurementWD
 }
