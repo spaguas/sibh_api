@@ -24,7 +24,11 @@ const getCities = async (options = {}) =>{
 
     buildCityWhere(options, query)
     
+
     query = await query //executando ela
+
+    
+    
 
     if(options.parameter_type_ids && options.parameter_type_ids.length > 0){   
         
