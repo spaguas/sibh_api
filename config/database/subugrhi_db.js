@@ -1,5 +1,6 @@
 const serializer = require("../../serializers/serializer")
 const { pg } = require("../knex")
+const { buildWhere: buildSubugrhiWhere} = require('../../models/subugrhiModel')
 
 const getSubugrhis = async (options = {}) =>{
 
@@ -15,7 +16,7 @@ const getSubugrhis = async (options = {}) =>{
 
     query.select(fields)
     
-    query.whereRaw("cod != 9999")
+    buildSubugrhiWhere(options,query)
 
     return query
 
