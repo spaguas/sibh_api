@@ -14,6 +14,10 @@ const getCities = async (options = {}) =>{
         return validation.error
     } 
     
+    if(options.with_bbox){
+        fields = [...fields, 'bbox_json']
+    }
+
     let query = pg.table('cities').select(fields)
     
     // buildMeasurementJoin(serializer_name, query)

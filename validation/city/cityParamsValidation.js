@@ -4,6 +4,7 @@ const schema = Joi.object({
     cod_ibge: Joi.string(),
     parameter_type_ids: Joi.array(),
     ids: Joi.array(),
+    with_bbox: Joi.boolean().optional()
 })
 
 const handleValidation = async (params) =>{
