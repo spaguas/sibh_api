@@ -9,6 +9,10 @@ const getSubugrhis = async (options = {}) =>{
 
     let query = pg.table('subugrhis')
 
+    if(options.with_bbox){
+        fields = [...fields, 'bbox_json']
+    }
+
     query.select(fields)
     
     query.whereRaw("cod != 9999")
