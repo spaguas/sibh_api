@@ -143,4 +143,9 @@ router.post('/new/webservice_data', async (req, res)=>{
     res.send(data)
 })
 
+router.post('/:id/status', async (req, res)=>{
+    // let data = await updateMeasurementStatus(req.params.id)
+    res.send('ok')
+})
+
 module.exports = router

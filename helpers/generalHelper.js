@@ -1,12 +1,45 @@
 const buildClause = (params, param_name, table_field_name, compare_type) =>{
     let value = params[param_name]
-    
+
     if(value){
         value = compare_type === 'like' ? `%${value}%` : compare_type === 'in' ? `(${value})` : compare_type === 'in_str' ? `(${value.map(v => `'${v}'`).join(',')})` : `'${value}'`
         return `${table_field_name} ${compare_type === 'in_str' ? 'in' : compare_type} ${value}`
     } else {
         return ''
     }
+}
+
+const buildClauseNew = (params, param_name, table_field_name, compare_type) =>{
+    let value = params[param_name]
+
+    if (!value) return undefined;
+
+    let clause, bindings;
+
+    switch (compare_type) {
+        case 'like':
+            clause = `${table_field_name} LIKE ?`;
+            bindings = [`%${value}%`];
+            break;
+
+        case 'in':
+            if (!Array.isArray(value)) value = [value];
+            clause = `${table_field_name} IN (${value.map(() => '?').join(', ')})`;
+            bindings = value;
+            break;
+
+        case 'in_str':
+            if (!Array.isArray(value)) value = [value];
+            clause = `${table_field_name} IN (${value.map(() => '?').join(', ')})`;
+            bindings = value.map(String);
+            break;
+
+        default:
+            clause = `${table_field_name} = ?`;
+            bindings = [value];
+    }
+
+    return { clause, bindings };
 }
 
 const JSONBAggregationString = (fields) =>{
@@ -55,5 +88,6 @@ module.exports = {
     buildClause,
     aggregationsFunctions,
     JSONBAggregationString,
-    dateByGroupType
+    dateByGroupType,
+    buildClauseNew
 }
