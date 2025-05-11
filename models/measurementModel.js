@@ -1,5 +1,6 @@
 const moment = require('moment')
 const serializer = require("../serializers/serializer")
+const { buildClauseNew } = require('../helpers/generalHelper')
 
 const buildSelect = (serializer_name, query) =>{
     let fields = serializer.measurement[serializer_name]
@@ -39,37 +40,34 @@ const filterRainingNowData = (data, params) =>{
 }
 
 const buildWhere = (params, query) =>{
-    let whereRaw = ["value != 'NaN'"]    
 
-    const buildClause = (param_name, table_field_name, compare_type) =>{
-        let value = params[param_name]
-        if(value){
+    let clauses = []
+    clauses.push({ clause: 'value != ?', bindings: ['NaN'] });
 
-            if(param_name === 'hours'){
-                let date_format = 'YYYY-MM-DD HH:mm'
-                let end_date = params['from_date'] ? moment(params['from_date'], date_format) : moment()
-                let start_date = end_date.clone().subtract(value, 'hours')
-                whereRaw.push(`date_hour >= '${start_date.format(date_format)}' and date_hour <= '${end_date.format(date_format)}'`)
-            } else {
-                value = compare_type === 'like' ? `'%${value}%'` :  compare_type === 'in' ? `(${value})` : `'${value}'`
-                whereRaw.push(`${table_field_name} ${compare_type} ${value}`)
-            }
-            
-        }
+    if(params['hours']){
+        let date_format = 'YYYY-MM-DD HH:mm'
+        let end_date = params['from_date'] ? moment(params['from_date'], date_format) : moment()
+        let start_date = end_date.clone().subtract(params['hours'], 'hours')
+        clauses.push({ clause: 'date_hour >= ? and date_hour <= ?', bindings: [start_date.format(date_format), end_date.format(date_format)] })
+        // whereRaw.push(`date_hour >= '${start_date.format(date_format)}' and date_hour <= '${end_date.format(date_format)}'`)
     }
-    
-    buildClause('station_prefix_ids', 'measurements.station_prefix_id', 'in')
-    buildClause('start_date', 'measurements.date_hour', '>=')
-    buildClause('end_date', 'measurements.date_hour', '<=')
-    buildClause('hours', 'measurements.date_hour', '<=')
-    buildClause('station_type_id', 'station_prefixes.station_type_id', '=')
-    buildClause('public', 'station_prefixes.public', '=')
-    buildClause('cod_ibge', 'cities.cod_ibge', '=')
-    buildClause('station_owner_ids', 'station_prefixes.station_owner_id', 'in')
-    buildClause('param_type', 'measurements.param_type', '=')
 
-    if(whereRaw){
-        query.whereRaw(whereRaw.join(' and '))
+    //construindo cláusulas analisadoras dos parâmetros passados
+    if ((c = buildClauseNew(params, 'station_prefix_ids', 'measurements.station_prefix_id', 'in'))) clauses.push(c);
+    if ((c = buildClauseNew(params, 'start_date', 'measurements.date_hour', '>='))) clauses.push(c);
+    if ((c = buildClauseNew(params, 'end_date', 'measurements.date_hour', '<='))) clauses.push(c);
+    if ((c = buildClauseNew(params, 'station_type_id', 'station_prefixes.station_type_id', '='))) clauses.push(c);
+    if ((c = buildClauseNew(params, 'public', 'station_prefixes.public', '='))) clauses.push(c);
+    if ((c = buildClauseNew(params, 'cod_ibge', 'cities.cod_ibge', '='))) clauses.push(c);
+    if ((c = buildClauseNew(params, 'statio_owner_ids', 'station_prefixes.station_owner_id', 'in'))) clauses.push(c);
+    if ((c = buildClauseNew(params, 'param_type', 'measurements.param_type', '='))) clauses.push(c);
+
+    if(clauses.length > 0){
+        const sql = clauses.map(c => c.clause).join(' AND ');
+        const bindings = clauses.flatMap(c => c.bindings);
+
+        query.whereRaw(sql, bindings);
+        
     }
 }
 

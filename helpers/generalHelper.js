@@ -33,6 +33,17 @@ const buildClauseNew = (params, param_name, table_field_name, compare_type) =>{
             clause = `${table_field_name} IN (${value.map(() => '?').join(', ')})`;
             bindings = value.map(String);
             break;
+        
+        case '>=':
+            clause = `${table_field_name} >= ?`;
+            bindings = value;
+            break;
+
+        case '<=':
+            clause = `${table_field_name} <= ?`;
+            bindings = value;
+            break;
+
 
         default:
             clause = `${table_field_name} = ?`;
