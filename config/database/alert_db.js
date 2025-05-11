@@ -37,7 +37,6 @@ const insertAlert = async (options = {}) =>{
     if(validation.error && validation.error.details.length > 0){
         return {message: validation.error, status: 400}
     }
-    
 
     let query = pg.insert(options).into('alerts')
 

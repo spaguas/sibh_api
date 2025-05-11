@@ -9,7 +9,7 @@ const getUserByEmail = async (email) =>{
 
     query.select(fields)
     
-    query.whereRaw(`email = '${email}'`).first()
+    query.whereRaw('email = ?', [email]).first();
 
     return query
 

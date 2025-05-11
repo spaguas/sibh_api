@@ -99,7 +99,11 @@ const getMeasurements = async (options = {}) =>{
     buildMeasurementWhere(options, query)
     buildMeasurementGroupBy(query,options.serializer,options.group_type)
 
-    query.orderByRaw(`station_prefix_id ${options.group_type != 'all' ? ", date desc" : ""}`);
+    query.orderBy('station_prefix_id')
+    
+    if (options.group_type !== 'all') {
+        query.orderBy('date', 'desc')
+    }
 
     console.log(query.toSQL());
 
