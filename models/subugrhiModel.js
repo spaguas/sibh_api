@@ -1,4 +1,4 @@
-const { buildClause } = require("../helpers/generalHelper")
+const { buildClauseNew } = require("../helpers/generalHelper")
 
 const buildWhere = (params, query) =>{
     let clauses = ["cod != '9999'"]
