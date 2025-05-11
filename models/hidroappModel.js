@@ -1,28 +1,38 @@
 const { getCities } = require("../config/database/city_db")
-const { buildClause } = require("../helpers/generalHelper")
+const { buildClauseNew } = require("../helpers/generalHelper")
 
 const buildWhere = (params, query) =>{
-    let whereRaw = []
-    //construindo cláusulas analisadoras dos parâmetros passados
-    whereRaw.push(buildClause(params,'date', 'hidroapp_statistics.date_hour', '='))
-    whereRaw.push(buildClause(params,'start_date', 'hidroapp_statistics.date_hour', '>='))
-    whereRaw.push(buildClause(params,'end_date', 'hidroapp_statistics.date_hour', '<='))
-    whereRaw.push(buildClause(params,'model_types', 'hidroapp_statistics.model_type', 'in_str'))
+    let clauses = []
 
-    if(whereRaw && whereRaw.length > 0){
-        query.whereRaw(whereRaw.filter(x=>x).join(' and '))
+    //construindo cláusulas analisadoras dos parâmetros passados
+    if ((c = buildClauseNew(params, 'date', 'hidroapp_statistics.date_hour', '='))) clauses.push(c);
+    if ((c = buildClauseNew(params, 'start_date', 'hidroapp_statistics.date_hour', '>='))) clauses.push(c);
+    if ((c = buildClauseNew(params, 'end_date', 'hidroapp_statistics.date_hour', '<='))) clauses.push(c);
+    if ((c = buildClauseNew(params, 'model_types', 'hidroapp_statistics.model_type', 'in_str'))) clauses.push(c);
+
+    if(clauses.length > 0){
+        const sql = clauses.map(c => c.clause).join(' AND ');
+        const bindings = clauses.flatMap(c => c.bindings);
+
+        query.whereRaw(sql, bindings);
+        
     }
 }
 
 const buildWhereView = (params, query) =>{
-    let whereRaw = []
-    //construindo cláusulas analisadoras dos parâmetros passados
-    whereRaw.push(buildClause(params,'model_type', 'hidroapp_statistics_view.model_type', '='))
-    whereRaw.push(buildClause(params,'model_id', 'hidroapp_statistics_view.model_id', '='))
-    whereRaw.push(buildClause(params,'month', 'hidroapp_statistics_view.month', '='))
+    let clauses = []
 
-    if(whereRaw && whereRaw.length > 0){
-        query.whereRaw(whereRaw.filter(x=>x).join(' and '))
+    //construindo cláusulas analisadoras dos parâmetros passados
+    if ((c = buildClauseNew(params, 'model_type', 'hidroapp_statistics_view.model_type', '='))) clauses.push(c);
+    if ((c = buildClauseNew(params, 'model_id', 'hidroapp_statistics_view.model_id', '='))) clauses.push(c);
+    if ((c = buildClauseNew(params, 'month', 'hidroapp_statistics_view.month', '='))) clauses.push(c);
+
+    if(clauses.length > 0){
+        const sql = clauses.map(c => c.clause).join(' AND ');
+        const bindings = clauses.flatMap(c => c.bindings);
+
+        query.whereRaw(sql, bindings);
+        
     }
 }
 

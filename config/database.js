@@ -1,5 +1,5 @@
 const { buildWhere: buildStationWhere } = require('../models/stationModel');
-const { buildSelect: buildMeasurementSelect, buildWhere: buildMeasurementWhere, buildJoin: buildMeasurementJoin, buildGroupBy: buildMeasurementGroupBy} = require('../models/measurementModel');
+const { buildWhere: buildMeasurementWhere, buildJoin: buildMeasurementJoin, buildGroupBy: buildMeasurementGroupBy} = require('../models/measurementModel');
 const serializer = require('../serializers/serializer');
 const { handleValidation: measurementHandleValidation } = require('../validation/measurement/measurementParamsValidation');
 

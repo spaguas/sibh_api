@@ -2,11 +2,6 @@ const moment = require('moment')
 const serializer = require("../serializers/serializer")
 const { buildClauseNew } = require('../helpers/generalHelper')
 
-const buildSelect = (serializer_name, query) =>{
-    let fields = serializer.measurement[serializer_name]
-    
-    query.raw(`SELECT * ${fields.join(",")}`)
-}
 
 const filterRainingNowData = (data, params) =>{
     let {last_hours,station_type_id, show_all,group_type} = params
@@ -111,16 +106,10 @@ const buildGroupBy = (query, serializer_name,group_type) =>{
     query.groupByRaw([...fields].join(','))
 }
 
-const fieldsByGrouptype = _ => {
-
-}
-
-
 
 module.exports = {
     buildWhere,
     buildJoin,
     buildGroupBy,
-    buildSelect,
     filterRainingNowData
 }
