@@ -1,7 +1,7 @@
 const { buildClauseNew } = require("../helpers/generalHelper")
 
 const buildWhere = (params, query) =>{
-    let clauses = ["cod != '9999'"]
+    let clauses = []
     clauses.push({ clause: 'cod != ?', bindings: ['9999'] });
 
     //construindo cláusulas analisadoras dos parâmetros passados
@@ -15,8 +15,6 @@ const buildWhere = (params, query) =>{
         const bindings = clauses.flatMap(c => c.bindings);
 
         query.whereRaw(sql, bindings);
-
-        console.log(query.toSQL());
         
     }
 }
