@@ -1,16 +1,20 @@
-const { buildClause } = require("../helpers/generalHelper")
+const { buildClauseNew } = require("../helpers/generalHelper")
 
 const buildWhere = (params, query) =>{
-    let whereRaw = []
+    let clauses = []
 
     //construindo cláusulas analisadoras dos parâmetros passados
-    whereRaw.push(buildClause(params,'start_date', 'new_measurements.date_hour', '>='))
-    whereRaw.push(buildClause(params,'end_date', 'new_measurements.date_hour', '<='))
-    whereRaw.push(buildClause(params,'station_prefix_ids', 'new_measurements.station_prefix_id', 'in'))
-    whereRaw.push(buildClause(params,'cod_ibge', 'cities.cod_ibge', '='))
+    if ((c = buildClauseNew(params, 'start_date', 'new_measurements.date_hour', '>='))) clauses.push(c);
+    if ((c = buildClauseNew(params, 'end_date', 'new_measurements.date_hour', '<='))) clauses.push(c);
+    if ((c = buildClauseNew(params, 'station_prefix_ids', 'new_measurements.station_prefix_id', 'in'))) clauses.push(c);
+    if ((c = buildClauseNew(params, 'cod_ibge', 'cities.cod_ibge', '='))) clauses.push(c);
 
-    if(whereRaw){
-        query.whereRaw(whereRaw.filter(x=>x).join(' and '))
+    if(clauses.length > 0){
+        const sql = clauses.map(c => c.clause).join(' AND ');
+        const bindings = clauses.flatMap(c => c.bindings);
+
+        query.whereRaw(sql, bindings);
+        
     }
 }
 

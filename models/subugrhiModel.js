@@ -1,15 +1,23 @@
 const { buildClause } = require("../helpers/generalHelper")
 
 const buildWhere = (params, query) =>{
-    let whereRaw = ["cod != '9999'"]
+    let clauses = ["cod != '9999'"]
+    clauses.push({ clause: 'cod != ?', bindings: ['9999'] });
 
     //construindo cláusulas analisadoras dos parâmetros passados
-    whereRaw.push(buildClause(params,'cod', 'subugrhis.cod', '='))
-    whereRaw.push(buildClause(params,'cods', 'subugrhis.cod', 'in'))
-    whereRaw.push(buildClause(params,'ids', 'subugrhis.id', 'in'))
+    if ((c = buildClauseNew(params, 'cod', 'subugrhis.cod', '='))) clauses.push(c);
+    if ((c = buildClauseNew(params, 'cods', 'subugrhis.cod', 'in'))) clauses.push(c);
+    if ((c = buildClauseNew(params, 'ids', 'subugrhis.id', 'in'))) clauses.push(c);
 
-    if(whereRaw){
-        query.whereRaw(whereRaw.filter(x=>x).join(' and '))
+
+    if(clauses.length > 0){
+        const sql = clauses.map(c => c.clause).join(' AND ');
+        const bindings = clauses.flatMap(c => c.bindings);
+
+        query.whereRaw(sql, bindings);
+
+        console.log(query.toSQL());
+        
     }
 }
 

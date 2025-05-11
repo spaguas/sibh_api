@@ -1,18 +1,22 @@
-const { buildClause } = require("../helpers/generalHelper")
+const { buildClauseNew } = require("../helpers/generalHelper")
 
 const buildWhere = (params, query) =>{
     
-    let whereRaw = []
+    let clauses = []
 
     //construindo cláusulas analisadoras dos parâmetros passados
-    whereRaw.push(buildClause(params, 'parameterizable_type', 'parameters.parameterizable_type', '='))
-    whereRaw.push(buildClause(params, 'parameter_type_ids', 'parameters.parameter_type_id', 'in'))
-    whereRaw.push(buildClause(params, 'parameter_type_id', 'parameters.parameter_type_id', '='))
-    whereRaw.push(buildClause(params, 'parameterizable_ids', 'parameters.parameterizable_id', 'in'))
-    whereRaw.push(buildClause(params, 'parameterizable_id', 'parameters.parameterizable_id', '='))
+    if ((c = buildClauseNew(params, 'parameterizable_type', 'parameters.parameterizable_type', '='))) clauses.push(c);
+    if ((c = buildClauseNew(params, 'parameter_type_ids', 'parameters.parameter_type_id', 'in'))) clauses.push(c);
+    if ((c = buildClauseNew(params, 'parameter_type_id', 'parameters.parameter_type_id', '='))) clauses.push(c);
+    if ((c = buildClauseNew(params, 'parameterizable_ids', 'parameters.parameterizable_id', 'in'))) clauses.push(c);
+    if ((c = buildClauseNew(params, 'parameterizable_id', 'parameters.parameterizable_id', '='))) clauses.push(c);
     
-    if(whereRaw){
-        query.whereRaw(whereRaw.filter(x=>x).join(' and '))
+    if(clauses.length > 0){
+        const sql = clauses.map(c => c.clause).join(' AND ');
+        const bindings = clauses.flatMap(c => c.bindings);
+
+        query.whereRaw(sql, bindings);
+        
     }
 }
 
