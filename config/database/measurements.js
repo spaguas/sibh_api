@@ -80,7 +80,12 @@ const newMeasurementWD = async (options) =>{
 
 }
 
+const updateMeasurementFields = async (measurement_id, obj) =>{
+    return await pg.table('measurements').where({id: measurement_id}).update(obj).returning('*');
+}
+
 module.exports = {
     getNowMeasurementsFlu,
-    newMeasurementWD
+    newMeasurementWD,
+    updateMeasurementFields
 }

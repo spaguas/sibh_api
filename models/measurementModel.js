@@ -102,6 +102,9 @@ const buildGroupBy = (query, serializer_name,group_type) =>{
     if(group_type != 'all'){
         fields.push('date')
     } 
+    if(group_type === 'minute'){
+        fields.push('measurements.id')
+    }
     
     query.groupByRaw([...fields].join(','))
 }

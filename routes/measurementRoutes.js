@@ -5,7 +5,8 @@ const { filterRainingNowData } = require('../models/measurementModel');
 const {handleValidation: nowValidation} = require('../validation/measurement/nowParamsValidation')
 const {handleValidation: fromCityValidation} = require('../validation/measurement/fromCityParamsValidation')
 const {handleValidation: measurementHandleValidation} = require('../validation/measurement/measurementParamsValidation');
-const { getNowMeasurementsFlu, newMeasurementWD } = require('../config/database/measurements');
+const { getNowMeasurementsFlu, newMeasurementWD, updateMeasurementFields } = require('../config/database/measurements');
+const { updateStatusValidation } = require('../validation/measurement/utilValidations');
 
 const router = express.Router();
 
@@ -143,9 +144,23 @@ router.post('/new/webservice_data', async (req, res)=>{
     res.send(data)
 })
 
-router.post('/:id/status', async (req, res)=>{
-    // let data = await updateMeasurementStatus(req.params.id)
-    res.send('ok')
+router.post('/:id/classification', async (req, res)=>{
+    let validation = await updateStatusValidation(req.body)
+    
+    if(validation.error && validation.error.details.length > 0){
+        res.send(validation.error)
+    } else {
+        try{
+            let data = await updateMeasurementFields(req.body.id, {measurement_classification_type_id: req.body.status})
+
+            res.send(data)
+        } catch(e){
+            res.send({message: 'Erro ao alterar status da medição', e})
+        }
+        
+    }
+    
+    
 })
 
 module.exports = router
