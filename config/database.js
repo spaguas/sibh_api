@@ -81,7 +81,7 @@ const getMeasurements = async (options = {}) =>{
         fields.push(pg.raw('MIN(date_hour) as min_date'))
         fields.push(pg.raw('MAX(date_hour) as max_date'))
     } else {
-        fields.push('measurements.id')
+        fields.push('measurements.id as measurement_id')
     }
 
     if(options.group_type != 'all'){
