@@ -145,13 +145,14 @@ router.post('/new/webservice_data', async (req, res)=>{
 })
 
 router.post('/:id/classification', async (req, res)=>{
-    let validation = await updateStatusValidation(req.body)
+
+    let validation = await updateStatusValidation({id: req.params.id, ...req.body})
     
     if(validation.error && validation.error.details.length > 0){
         res.send(validation.error)
     } else {
         try{
-            let data = await updateMeasurementFields(req.body.id, {measurement_classification_type_id: req.body.status})
+            let data = await updateMeasurementFields(req.params.id, {measurement_classification_type_id: req.body.status})
 
             res.send(data)
         } catch(e){
