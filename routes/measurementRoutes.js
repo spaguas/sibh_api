@@ -7,6 +7,7 @@ const {handleValidation: fromCityValidation} = require('../validation/measuremen
 const {handleValidation: measurementHandleValidation} = require('../validation/measurement/measurementParamsValidation');
 const { getNowMeasurementsFlu, newMeasurementWD, updateMeasurementFields } = require('../config/database/measurements');
 const { updateStatusValidation } = require('../validation/measurement/utilValidations');
+const { authenticateToken, authorize } = require('../middlewares/authMiddleware');
 
 const router = express.Router();
 
@@ -144,7 +145,7 @@ router.post('/new/webservice_data', async (req, res)=>{
     res.send(data)
 })
 
-router.post('/:id/classification', async (req, res)=>{
+router.post('/:id/classification', authenticateToken, authorize(['admin']), async (req, res)=>{
 
     let validation = await updateStatusValidation({id: req.params.id, ...req.body})
     
@@ -160,7 +161,6 @@ router.post('/:id/classification', async (req, res)=>{
         }
         
     }
-    
     
 })
 

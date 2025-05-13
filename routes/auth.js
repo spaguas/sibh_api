@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcryptjs');
-const {getUserByEmail} = require('../config/database/user')
+const {getUserByEmail, getUserRoles} = require('../config/database/user')
 const {generateToken} = require('../services/authService')
 const {authenticateToken} = require('../middlewares/authMiddleware')
 
@@ -20,9 +20,12 @@ router.post('/login',  async (req, res) => {
         return res.status(401).json({ error: 'Credenciais invalida' });
     }
 
-    const token = generateToken(user.id)
+    const roles = await getUserRoles(user.id)
+    const token = generateToken(user,roles.map(x=>x.name))
 
-    res.send({token})
+    console.log(token,roles);
+
+    res.send({token,roles: roles.map(x=>x.name)})
 });
 
 router.post('/test', authenticateToken, async (req, res) => {    

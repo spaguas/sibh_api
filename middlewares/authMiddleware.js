@@ -19,4 +19,17 @@ function authenticateToken(req, res, next) {
   }
 }
 
-module.exports = { authenticateToken };
+function authorize(allowedRoles = []){
+  return (req, res, next) =>{
+    const userRole = req.user?.roles || []
+    
+    if(!userRole.includes('dev') && !userRole.some(r=> allowedRoles.includes(r))){
+      return res.status(403).json({ message: 'Acesso negado' });
+    }
+
+    next()
+  }
+}
+
+
+module.exports = { authenticateToken,authorize };
