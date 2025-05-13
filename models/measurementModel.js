@@ -38,13 +38,13 @@ const buildWhere = (params, query) =>{
 
     let clauses = []
     clauses.push({ clause: 'value != ?', bindings: ['NaN'] });
+    clauses.push({ clause: 'measurement_classification_type_id in (?,?,?)', bindings: [1, 2, 3] }); //removendo dados marcados como 'suspeito(id 4)'
 
     if(params['hours']){
         let date_format = 'YYYY-MM-DD HH:mm'
         let end_date = params['from_date'] ? moment(params['from_date'], date_format) : moment()
         let start_date = end_date.clone().subtract(params['hours'], 'hours')
         clauses.push({ clause: 'date_hour >= ? and date_hour <= ?', bindings: [start_date.format(date_format), end_date.format(date_format)] })
-        // whereRaw.push(`date_hour >= '${start_date.format(date_format)}' and date_hour <= '${end_date.format(date_format)}'`)
     }
 
     //construindo cláusulas analisadoras dos parâmetros passados
