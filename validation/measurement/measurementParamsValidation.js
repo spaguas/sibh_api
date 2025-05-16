@@ -29,7 +29,8 @@ const schema = Joi.object({
             .required(),
     parameter_type_ids: Joi.array().optional(),
     public: Joi.boolean().optional(),
-    format: Joi.string().optional()
+    format: Joi.string().optional(),
+    token: Joi.string().optional()
 })
 .or('station_prefix_ids') //preciso de 1 desses parâmetros
 .custom((value, helpers) =>{ // validar a diff entre as datas

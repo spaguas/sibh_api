@@ -12,6 +12,7 @@ const cityRoutes = require('./routes/cityRoutes')
 const newMeasurementRoutes = require('./routes/newMeasurementRoutes')
 const hidroappRoutes = require('./routes/hidroappRoutes')
 const authRoutes = require('./routes/auth')
+const s3Routes = require('./routes/s3Routes')
 const bodyParser = require('body-parser');
 const { corsOptions } = require('./config/cors');
 
@@ -33,5 +34,6 @@ app.use('/subugrhis', subugrhisRoutes)
 app.use('/auth', authRoutes)
 app.use('/cities', cityRoutes)
 app.use('/hidroapp_stats', hidroappRoutes)
+app.use('/s3', s3Routes)
 
 module.exports = app
