@@ -17,8 +17,8 @@ const s3 = new S3Client({
 
 
 const getRadarLastImages = async ({radar_name = 'ponte_nova'}) =>{
-    let day = moment().subtract(3, 'hours').format('YYYYMMDD')
-    let day_hour = moment().subtract(3, 'hours').format('YYYYMMDDHH')
+    let day = moment().subtract(12, 'hours').format('YYYYMMDD')
+    let day_hour = moment().subtract(12, 'hours').format('YYYYMMDDHH')
     
     
     const resp = await s3.send(new ListObjectsV2Command({
@@ -28,18 +28,19 @@ const getRadarLastImages = async ({radar_name = 'ponte_nova'}) =>{
         MaxKeys: 1000,
       }));
 
-    const urls = await Promise.all(
-        resp.Contents.map(async obj => ({
-            lastModified: obj.LastModified,
-            key:obj.Key,
-            link: await getSignedUrl(s3, new GetObjectCommand({
-                Bucket: 'images',
-                Key: obj.Key,
-              }), { expiresIn: 60 * 20 })
-            })
-        )
-    )
-    return urls
+    return resp
 }
 
-module.exports = {getRadarLastImages}
+const getImage = async (key) =>{
+    let command = new GetObjectCommand({
+        Bucket: 'images',
+        Key: key,
+    })
+
+    const data = await s3.send(command);
+
+    return data
+    
+}
+
+module.exports = {getRadarLastImages,getImage}
