@@ -16,6 +16,10 @@ router.get('/image', async (req, res) => {
         res.setHeader('Content-Type', image.ContentType || 'image/png');
         res.setHeader('Cache-Control', 'public, max-age=3600');
 
+        if (req.headers['if-none-match'] === req.query.key) {
+            return res.status(304).end();
+        }
+
         // Pipe da imagem para a resposta
         image.Body.pipe(res);
     } catch(e){
