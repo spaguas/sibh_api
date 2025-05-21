@@ -16,14 +16,13 @@ const s3 = new S3Client({
 });
 
 
-const getRadarLastImages = async ({radar_name = 'ponte_nova'}) =>{
-    let day = moment().subtract(12, 'hours').format('YYYYMMDD')
-    let day_hour = moment().subtract(12, 'hours').format('YYYYMMDDHH')
-    
+const getRadarLastImages = async ({radar_name = 'pnova',hours=12}) =>{
+    let day = moment().subtract(hours, 'hours').format('YYYYMMDD')
+    let day_hour = moment().subtract(hours, 'hours').format('YYYYMMDDHH')
     
     const resp = await s3.send(new ListObjectsV2Command({
         Bucket: 'images',
-        StartAfter: `radar/pnova/cappi_24h/${day}/${day_hour}`,
+        StartAfter: `radar/${radar_name}/cappi_24h/${day}/${day_hour}`,
         ContinuationToken: undefined,
         MaxKeys: 1000,
       }));

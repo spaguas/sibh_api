@@ -16,7 +16,7 @@ const getNowMeasurementsFlu = async (options) =>{
     
     let fields = [
         pg.raw('DISTINCT ON (measurements.station_prefix_id) measurements.station_prefix_id'),
-        'station_prefixes.id', 'date_hour','station_prefixes.prefix','value','stations.latitude','stations.longitude','station_owners.name as station_owner', 'cities.name as city', 'ugrhis.name as ugrhi', 'subugrhis.name as subugrhi', 'station_prefixes.measurement_gap'    
+        'station_prefixes.id', 'stations.name as station_name', 'date_hour','station_prefixes.prefix','value','stations.latitude','stations.longitude','station_owners.name as station_owner', 'cities.name as city', 'ugrhis.name as ugrhi', 'subugrhis.name as subugrhi', 'station_prefixes.measurement_gap'    
     ]
 
     if(options.references && options.references.length > 0){
@@ -47,7 +47,7 @@ const getNowMeasurementsFlu = async (options) =>{
     query.joinRaw("join parameters p on p.parameterizable_id = station_prefixes.id and p.parameterizable_type = 'StationPrefix' and p.parameter_type_id = 2")
 
     query.whereRaw(`station_prefixes.station_type_id = 1`)
-    query.whereRaw("date_hour >= now() - interval '1 day'")
+    query.whereRaw("date_hour >= now() - interval '3 hours'")
     query.whereRaw("public = true")
 
     query.orderByRaw('measurements.station_prefix_id, measurements.date_hour desc')
