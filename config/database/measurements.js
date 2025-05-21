@@ -16,7 +16,7 @@ const getNowMeasurementsFlu = async (options) =>{
     
     let fields = [
         pg.raw('DISTINCT ON (measurements.station_prefix_id) measurements.station_prefix_id'),
-        'station_prefixes.id', 'stations.name as station_name', 'date_hour','station_prefixes.prefix','value','stations.latitude','stations.longitude','station_owners.name as station_owner', 'cities.name as city', 'ugrhis.name as ugrhi', 'subugrhis.name as subugrhi', 'station_prefixes.measurement_gap'    
+        'station_prefixes.id', 'stations.name as station_name', 'date_hour','station_prefixes.prefix','value','stations.latitude','stations.longitude','station_owners.name as station_owner', 'cities.id as city_id','cities.name as city', 'ugrhis.id as ugrhi_id', 'ugrhis.name as ugrhi', 'subugrhis.id as subugrhi_id', 'subugrhis.name as subugrhi', 'station_prefixes.measurement_gap'
     ]
 
     if(options.references && options.references.length > 0){
