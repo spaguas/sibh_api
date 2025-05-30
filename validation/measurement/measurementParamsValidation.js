@@ -29,7 +29,7 @@ const schema = Joi.object({
             .required(),
     parameter_type_ids: Joi.array().optional(),
     public: Joi.boolean().optional(),
-    format: Joi.string().valid('csv').optional(),
+    format: Joi.string().valid('csv','json').optional(),
     token: Joi.string().optional()
 })
 .or('station_prefix_ids') //preciso de 1 desses parâmetros
