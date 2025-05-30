@@ -109,10 +109,19 @@ const buildGroupBy = (query, serializer_name,group_type) =>{
     query.groupByRaw([...fields].join(','))
 }
 
+const prepareToCSV = (data) =>{
+    const header = 'Prefixo,Nome,TipoPosto,Data,Valor,Valor2\n';
+
+    // Concatena os dados
+    const linhas = data.map(d => `${d.prefix},${d.station_name},${d.station_type_id},${d.date},${d.value},${d.read_value}`).join('\n');
+  
+    return header + linhas;
+}
 
 module.exports = {
     buildWhere,
     buildJoin,
     buildGroupBy,
-    filterRainingNowData
+    filterRainingNowData,
+    prepareToCSV
 }

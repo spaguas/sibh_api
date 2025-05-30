@@ -1,7 +1,7 @@
 const express = require('express');
 const { getMeasurements, getParameters } = require('../config/database');
 const { scanList,writeList } = require('../services/redisService');
-const { filterRainingNowData } = require('../models/measurementModel');
+const { prepareToCSV } = require('../models/measurementModel');
 const {handleValidation: nowValidation} = require('../validation/measurement/nowParamsValidation')
 const {handleValidation: fromCityValidation} = require('../validation/measurement/fromCityParamsValidation')
 const {handleValidation: measurementHandleValidation} = require('../validation/measurement/measurementParamsValidation');
@@ -30,6 +30,17 @@ router.get('/', async (req, res) => {
             res.status(400)
         }
         let references
+
+        if(options['format'] === 'csv'){
+            let csv = prepareToCSV(response)
+            // Define os cabeçalhos para download
+            res.setHeader('Content-Type', 'text/csv');
+            res.setHeader('Content-Disposition', 'attachment; filename="dados.csv"');
+        
+            // Envia o conteúdo
+            res.send(csv);
+        }
+
         if(options['parameter_type_ids']){
           references = await getParameters({parameterizable_type: 'StationPrefix', parameterizable_ids: options.station_prefix_ids, parameter_type_ids: options.parameter_type_ids})
         }
