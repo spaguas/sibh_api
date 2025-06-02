@@ -8,17 +8,30 @@ const schema = Joi.object({
     group_type: Joi.string().valid('minute', 'all').optional(),
     show_all: Joi.boolean().optional(),
     public: Joi.boolean().optional(),
-    hours: Joi.required().when('group_type', {
-        is: 'all',
-        then: Joi.number().max(72),
-        otherwise: Joi.number().max(6)
+    hours: Joi.number().required().custom((value, helpers) => {
+        const { group_type, force } = helpers.state.ancestors[0]; // acessa os outros campos
+        
+        if (group_type === 'all' && force !== 'true' && value > 72) {
+            return helpers.error('any.custom', { message: 'hours deve ser no máximo 72' });
+        }
+
+        if (group_type === 'all' && force === 'true' && value > 744) {
+            return helpers.error('any.custom', { message: 'hours deve ser no máximo 744' });
+        }
+
+        if (group_type !== 'all' && value > 6) {
+            return helpers.error('any.custom', { message: 'hours deve ser no máximo 6' });
+        }
+
+        return value;
     }),
     parameter_type_ids: Joi.when('station_type_id', {
         is: 1,
         then: Joi.array().items(Joi.number().valid(2)).optional(),
         otherwise: Joi.forbidden()
     }),
-    from_date: Joi.date().optional()
+    from_date: Joi.date().optional(),
+    force: Joi.boolean().optional()
 })
 
 const handleValidation = async (params) =>{
