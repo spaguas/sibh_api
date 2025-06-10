@@ -1,6 +1,7 @@
 const {getHidroAppData,getHidroAppViewData} = require('../config/database/hidroapp_db')
 const express = require('express');
 const router = express.Router();
+const { encode } = require('@msgpack/msgpack');
 
 router.get('/', async (req, res) => {  
     let response  
@@ -11,8 +12,15 @@ router.get('/', async (req, res) => {
         
         res.status(500)
     }
+
+    if(req.query.msgpack){
+        const buffer = encode(response);
+        res.setHeader('Content-Type', 'application/msgpack');
+        res.send(buffer);
+    } else {
+        res.send(response);
+    }
     
-    res.send(response);
 });
 
 router.get('/view', async (req, res) => {  
