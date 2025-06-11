@@ -14,7 +14,8 @@ router.get('/', async (req, res) => {
     }
 
     if(req.query.msgpack){
-        const buffer = encode(response);
+        const encoded = encode(response);
+        const buffer = Buffer.from(encoded);
         res.setHeader('Content-Type', 'application/msgpack');
         res.send(buffer);
     } else {

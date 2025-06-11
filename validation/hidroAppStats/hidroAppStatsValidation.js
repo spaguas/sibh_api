@@ -12,7 +12,8 @@ const schema = Joi.object({
         is: Joi.exist(),
         then: Joi.required(),
         otherwise: Joi.forbidden()
-    }).greater(Joi.ref('start_date'))
+    }).greater(Joi.ref('start_date')),
+    msgpack: Joi.boolean().optional()
 }).custom((value, helpers)=>{
     const {start_date, end_date} = value
     const diffInDays = (new Date(end_date) - new Date(start_date)) / (1000 * 60 * 60 * 24);
