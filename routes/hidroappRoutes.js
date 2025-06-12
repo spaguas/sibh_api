@@ -14,10 +14,16 @@ router.get('/', async (req, res) => {
     }
 
     if(req.query.msgpack){
-        const buffer = encode(response);
+        const encoded = encode(response);
+        const buffer = Buffer.from(encoded);
+        zlib.gzip(buffer, (err, compressed) => {
+            if (err) return res.status(500).end();
 
-        res.setHeader('Content-Type', 'application/msgpack');
-        res.send(buffer);
+            res.setHeader('Content-Encoding', 'gzip');
+            res.setHeader('Content-Type', 'application/msgpack');
+            res.setHeader('Content-Length', compressed.length);
+            res.send(compressed);
+        });
         // res.send(decode(buffer));
     } else {
         res.send(response);
