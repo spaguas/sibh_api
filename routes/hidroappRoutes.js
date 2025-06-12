@@ -2,6 +2,7 @@ const {getHidroAppData,getHidroAppViewData} = require('../config/database/hidroa
 const express = require('express');
 const router = express.Router();
 const { encode, decode } = require('@msgpack/msgpack');
+const zlib = require('zlib');
 
 router.get('/', async (req, res) => {  
     let response  
