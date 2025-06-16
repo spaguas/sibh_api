@@ -32,14 +32,14 @@ router.post('/login',  async (req, res) => {
         return res.status(401).json({ error: 'Credenciais invalida' });
     }
 
-    const roles = await getUserRoles(user.id)
-    const token = generateToken(user,roles.map(x=>x.name))
+    // const roles = await getUserRoles(user.id)
+    const token = generateToken(user,[])
 
 
-    res.send({token,roles: roles.map(x=>x.name)})
+    res.send({token, expiration: user.exp})
 });
 
-router.post('/test', authenticateToken, async (req, res) => {    
+router.post('/me', authenticateToken, async (req, res) => {  
     res.send(req.user)
 });
 
