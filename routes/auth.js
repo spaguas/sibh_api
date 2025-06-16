@@ -31,16 +31,17 @@ router.post('/login',  async (req, res) => {
     if(!compare){
         return res.status(401).json({ error: 'Credenciais invalida' });
     }
-
-    // const roles = await getUserRoles(user.id)
+    
     const token = generateToken(user,[])
 
 
     res.send({token, expiration: user.exp})
 });
 
-router.post('/me', authenticateToken, async (req, res) => {  
-    res.send(req.user)
+router.post('/me', authenticateToken, async (req, res) => {      
+    const roles = await getUserRoles(req.user.id)
+    const { id, ...rest } = req.user; 
+    res.send({...rest, roles:roles.map(x=>x.name)})
 });
 
 module.exports = router
