@@ -156,7 +156,7 @@ router.post('/new/webservice_data', async (req, res)=>{
     res.send(data)
 })
 
-router.post('/:id/classification', authenticateToken, authorize(['admin']), async (req, res)=>{
+router.post('/:id/classification', authenticateToken, authorize(['admin', 'dev']), async (req, res)=>{
 
     let validation = await updateStatusValidation({id: req.params.id, ...req.body})
     
