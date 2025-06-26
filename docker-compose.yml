@@ -12,11 +12,13 @@ services:
       - redis-data:/data
       - ./redis.conf:/usr/local/etc/redis/redis.conf
     command: ["redis-server", "/usr/local/etc/redis/redis.conf"]
-  sibh-api:
+  sibh-api-a:
     restart: always
     build: .
     ports:
       - "${PORT}:${PORT}"
+      #expose:
+      #- "${PORT}"
     environment:
       - PORT=${PORT}
       - REDIS_HOST=redis
@@ -26,6 +28,27 @@ services:
       - sibhapi-network
     links:
       - redis
+    command: ["node", "--max-old-space-size=4096", "index.js"]
+    container_name: sibh-api-A
+  sibh-api-b:
+    restart: always
+    build: .
+    ports:
+      - "11001:11000"
+    environment:
+      - PORT=11001
+      - REDIS_HOST=redis
+    depends_on:
+      - redis
+    networks:
+      - sibhapi-network
+    links:
+      - redis
+    command: ["node", "--max-old-space-size=4096", "index.js"]
+    container_name: sibh-api-B
+
+
+
 networks:
   sibhapi-network:
     driver: bridge
