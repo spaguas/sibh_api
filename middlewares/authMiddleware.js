@@ -22,6 +22,7 @@ function authenticateToken(req, res, next) {
 function authorize(allowedRoles = []){
   return (req, res, next) =>{
     const userRole = req.user?.roles || []
+    console.log(req.user);
     
     if(!userRole.includes('dev') && !userRole.some(r=> allowedRoles.includes(r))){
       return res.status(403).json({ message: 'Acesso negado' });
