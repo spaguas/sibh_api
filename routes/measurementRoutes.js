@@ -7,11 +7,11 @@ const {handleValidation: fromCityValidation} = require('../validation/measuremen
 const {handleValidation: measurementHandleValidation} = require('../validation/measurement/measurementParamsValidation');
 const { getNowMeasurementsFlu, newMeasurementWD, updateMeasurementFields } = require('../config/database/measurements');
 const { updateStatusValidation } = require('../validation/measurement/utilValidations');
-const { authenticateToken, authorize } = require('../middlewares/authMiddleware');
+const { authenticateToken, authorize, optionalAuthorize,optionalAuthenticateToken } = require('../middlewares/authMiddleware');
 
 const router = express.Router();
 
-router.get('/', async (req, res) => {
+router.get('/', optionalAuthenticateToken, optionalAuthorize(['dev', 'admin']), async (req, res) => {
     let options = req.query
     options.serializer = options.serializer || 'default' //default value
     options.group_type = options.group_type || 'minute' //default value
@@ -25,7 +25,7 @@ router.get('/', async (req, res) => {
     } 
 
     try{
-        let response = await getMeasurements(options)
+        let response = await getMeasurements({...options, authorized: req.user?.authorized})
         if(response.details){
             res.status(400)
         }

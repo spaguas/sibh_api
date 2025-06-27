@@ -10,7 +10,6 @@ const filterRainingNowData = (data, params) =>{
     let plu = {}
 
     data.forEach(measurement =>{
-        console.log(measurement);
         
         if(moment(measurement.date, station_type_id === "1" ? "YYYY/MM/DD HH:mm" : "YYYY/MM/DD HH" ) >= date){
             if(station_type_id === '1'){
@@ -27,18 +26,17 @@ const filterRainingNowData = (data, params) =>{
                 }
             }
         }
-    })    
-    
-    console.log(plu);
+    })
     
     return station_type_id === '1' ? flu : Object.values(plu).filter(x=>x.value >= (show_all ? 0 : 1 ))
 }
 
 const buildWhere = (params, query) =>{
-
+    console.log(params);
+    
     let clauses = []
     clauses.push({ clause: 'value != ?', bindings: ['NaN'] });
-    clauses.push({ clause: 'measurement_classification_type_id in (?,?,?)', bindings: [1, 2, 3] }); //removendo dados marcados como 'suspeito(id 4)'
+    clauses.push({ clause: `measurement_classification_type_id in (${params.authorized ? '?,?,?,?' : '?,?,?'})`, bindings:  (params.authorized ? [1, 2, 3,4] : [1, 2, 3]) }); //removendo dados marcados como 'suspeito(id 4)' e só exibindo caso o usuario seja ADMIN
 
     if(params['hours']){
         let date_format = 'YYYY-MM-DD HH:mm'

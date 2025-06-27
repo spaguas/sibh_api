@@ -69,7 +69,7 @@ const getStations = async (options = {}) =>{
 }
 
 const getMeasurements = async (options = {}) =>{   
-
+    
     let fields = [...serializer.measurement[options.serializer], pg.raw('COUNT(value) as qtd'), 
         pg.raw('CASE WHEN station_prefixes.station_type_id = 2 THEN SUM(value) ELSE AVG(value) END as value'),
         pg.raw('CASE WHEN station_prefixes.station_type_id = 2 THEN SUM(read_value) ELSE AVG(read_value) END as read_value'),
