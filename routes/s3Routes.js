@@ -29,7 +29,7 @@ router.get('/image', async (req, res) => {
         image = await getImage(req.query.key);
         res.setHeader('ETag', req.query.key);
         res.setHeader('Content-Type', image.ContentType || 'image/png');
-        res.setHeader('Cache-Control', 'public, max-age=3600');
+        res.setHeader('Cache-Control', 'public, max-age=31536000, immutable');
 
         // Pipe da imagem para a resposta
         image.Body.pipe(res);
