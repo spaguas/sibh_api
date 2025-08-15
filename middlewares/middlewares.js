@@ -1,6 +1,7 @@
 const corsAllowedOrigins = process.env.CORS_ORIGINS
 const ENV = process.env.ENVIRONMENT
 const FIXED_TOKEN = 'DIEGO'
+const {requestDuration, requestCount, uniqueUsers}  = require("@modules/metrics.js")
 
 // const checkOrigin = (req, res, next) => {
 //     const fetchSite = req.headers['sec-fetch-site'];
@@ -43,8 +44,39 @@ const validateAccess = (req, res, next) => {
     return res.status(403).send('Acesso negado: IP ou token ou ambiente inválido.');
   }
 };
+
+const metricsMiddleware = (req, res, next) => {
+  const start = process.hrtime();
+
+  
+
+  
+  res.on('finish', () => {
+    const diff = process.hrtime(start);
+    const duration = diff[0] + diff[1] / 1e9;
+    const route = req.baseUrl || req.route?.path || req.path || req.originalUrl
+    
+    requestCount.inc({
+      method: req.method,
+      route,
+      status_code: res.statusCode
+    });
+
+    requestDuration.observe({
+      method: req.method,
+      route,
+      status_code: res.statusCode
+    }, duration);
+
+    uniqueUsers.add(req.ip);
+  });
+
+  next();
+};
+
   
 module.exports = {
-  validateAccess
+  validateAccess,
+  metricsMiddleware
   // checkOrigin
 };
