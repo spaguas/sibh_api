@@ -26,6 +26,7 @@ router.get('/', optionalAuthenticateToken, optionalAuthorize(['dev', 'admin']), 
 
     try{
         let response = await getMeasurements({...options, authorized: req.user?.authorized})
+        
         if(response.details){
             res.status(400)
         }
@@ -45,8 +46,8 @@ router.get('/', optionalAuthenticateToken, optionalAuthorize(['dev', 'admin']), 
           references = await getParameters({parameterizable_type: 'StationPrefix', parameterizable_ids: options.station_prefix_ids, parameter_type_ids: options.parameter_type_ids})
         }
         res.send({measurements: response, references: references});
-    } catch (e){
-    res.status(500)
+    } catch (e){        
+        res.status(500).send('Erro interno')
     }
 });
 

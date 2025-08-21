@@ -106,8 +106,8 @@ const getMeasurements = async (options = {}) =>{
     if (options.group_type !== 'all') {
         query.orderBy('date', 'desc')
     }
-
-    console.log(query.toSQL());
+    
+    query.timeout(options.authorized ? 60000 : 30000, {cancel:true})
 
     return query
 }

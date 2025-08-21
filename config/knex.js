@@ -10,7 +10,11 @@ let pg = require('knex')({
       password: process.env.DATABASE_PASSWORD,
       ssl: false,
     },
-    pool: { min: 0, max: parseInt(process.env.DATABASE_MAXPOOL) },
+    pool: { 
+      min: 0, 
+      max: parseInt(process.env.DATABASE_MAXPOOL)
+    }
+    
 });
 
 let pgWD = require('knex')({
