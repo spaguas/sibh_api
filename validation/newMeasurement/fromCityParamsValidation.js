@@ -5,12 +5,13 @@ const schema = Joi.object({
     end_date: Joi.date().required(),
     cod_ibge: Joi.string().required(),
     group_type: Joi.string().required(),
-    format: Joi.string().valid('json', 'csv').required()
+    format: Joi.string().valid('json', 'csv').required(),
+    station_owner_ids: Joi.array().items(Joi.number()).optional()
 }).custom((value, helpers)=>{
     const {start_date, end_date} = value
     const diffInDays = (new Date(end_date) - new Date(start_date)) / (1000 * 60 * 60 * 24);
 
-    if (diffInDays > 31) {
+    if (diffInDays > 366) {
         return helpers.error('custom.maxDays', { diffInDays });
     }
 

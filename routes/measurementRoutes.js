@@ -122,35 +122,35 @@ router.get('/now', async(req, res)=>{
     return true
 })
 
-router.get('/from_city', async(req, res)=>{
-    let options = req.query
-    options.serializer = options.serializer || 'default' //default value
-    options.group_type = options.group_type || 'all' //default value
+// router.get('/from_city', async(req, res)=>{
+//     let options = req.query
+//     options.serializer = options.serializer || 'default' //default value
+//     options.group_type = options.group_type || 'all' //default value
     
-    let validation = await fromCityValidation(options) //validando parâmetros
+//     let validation = await fromCityValidation(options) //validando parâmetros
         
-    if(validation.error && validation.error.details.length > 0){
-        res.status(500)
-        res.send(validation.error)
-        return false
-    }
+//     if(validation.error && validation.error.details.length > 0){
+//         res.status(500)
+//         res.send(validation.error)
+//         return false
+//     }
     
-    try{
+//     try{
 
-        let response = await getMeasurements(options)
-        if(response.details){
-            res.status(400)
-        }
-        res.send({measurements: response});
+//         let response = await getMeasurements(options)
+//         if(response.details){
+//             res.status(400)
+//         }
+//         res.send({measurements: response});
         
         
-    } catch(e){
-        console.log(e);
+//     } catch(e){
+//         console.log(e);
         
-        res.status(500)
-    }
-    return true
-})
+//         res.status(500)
+//     }
+//     return true
+// })
 
 router.post('/new/webservice_data', async (req, res)=>{
     let data = await newMeasurementWD(req.body)

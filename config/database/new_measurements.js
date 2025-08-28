@@ -25,7 +25,7 @@ const getMeasurements = async (options = {}) =>{
     if(options.group_type != 'minute'){
         query.groupByRaw(['station_prefix_id, date'].join(','))
     }
-
+    console.log('wtf')
     query.orderByRaw('date desc')
 
     console.log(query.toSQL());

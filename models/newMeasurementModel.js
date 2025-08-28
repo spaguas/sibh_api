@@ -8,6 +8,7 @@ const buildWhere = (params, query) =>{
     if ((c = buildClauseNew(params, 'end_date', 'new_measurements.date_hour', '<='))) clauses.push(c);
     if ((c = buildClauseNew(params, 'station_prefix_ids', 'new_measurements.station_prefix_id', 'in'))) clauses.push(c);
     if ((c = buildClauseNew(params, 'cod_ibge', 'cities.cod_ibge', '='))) clauses.push(c);
+    if ((c = buildClauseNew(params, 'station_owner_ids', 'station_prefixes.station_owner_id', 'in'))) clauses.push(c);
 
     if(clauses.length > 0){
         const sql = clauses.map(c => c.clause).join(' AND ');
