@@ -52,7 +52,7 @@ const buildWhere = (params, query) =>{
     if ((c = buildClauseNew(params, 'station_type_id', 'station_prefixes.station_type_id', '='))) clauses.push(c);
     if ((c = buildClauseNew(params, 'public', 'station_prefixes.public', '='))) clauses.push(c);
     if ((c = buildClauseNew(params, 'cod_ibge', 'cities.cod_ibge', '='))) clauses.push(c);
-    if ((c = buildClauseNew(params, 'statio_owner_ids', 'station_prefixes.station_owner_id', 'in'))) clauses.push(c);
+    if ((c = buildClauseNew(params, 'station_owner_ids', 'station_prefixes.station_owner_id', 'in'))) clauses.push(c);
     if ((c = buildClauseNew(params, 'param_type', 'measurements.param_type', '='))) clauses.push(c);
 
     if(clauses.length > 0){

@@ -3,7 +3,7 @@ const { getMeasurements, getParameters } = require('../config/database');
 const { scanList,writeList } = require('../services/redisService');
 const { prepareToCSV } = require('../models/measurementModel');
 const {handleValidation: nowValidation} = require('../validation/measurement/nowParamsValidation')
-const {handleValidation: fromCityValidation} = require('../validation/measurement/fromCityParamsValidation')
+const {handleValidation: fromCityValidation} = require('../validation/measurement/cotFromCityParamsValidation')
 const {handleValidation: measurementHandleValidation} = require('../validation/measurement/measurementParamsValidation');
 const { getNowMeasurementsFlu, newMeasurementWD, updateMeasurementFields } = require('../config/database/measurements');
 const { updateStatusValidation } = require('../validation/measurement/utilValidations');
@@ -122,35 +122,40 @@ router.get('/now', async(req, res)=>{
     return true
 })
 
-// router.get('/from_city', async(req, res)=>{
-//     let options = req.query
-//     options.serializer = options.serializer || 'default' //default value
-//     options.group_type = options.group_type || 'all' //default value
+router.get('/cot_from_city', async(req, res)=>{
+    let options = req.query
+    options.group_type = options.group_type || 'all' //default value
     
-//     let validation = await fromCityValidation(options) //validando parâmetros
-        
-//     if(validation.error && validation.error.details.length > 0){
-//         res.status(500)
-//         res.send(validation.error)
-//         return false
-//     }
+    options.format = options.format || 'json'
     
-//     try{
+    let validation = await fromCityValidation(options) //validando parâmetros
 
-//         let response = await getMeasurements(options)
-//         if(response.details){
-//             res.status(400)
-//         }
-//         res.send({measurements: response});
+    if(validation.error && validation.error.details.length > 0){
+        res.status(500)
+        res.send(validation.error)
+        return false
+    }
+    
+    options.station_owner_ids = [70]
+    options.param_type = 'COT'
+    options.serializer = options.serializer || 'default' //default value
+    
+    
+    try{
+        let response = await getMeasurements(options)
+        if(response.details){
+            res.status(400)
+        }
+        res.send({measurements: response});
         
         
-//     } catch(e){
-//         console.log(e);
+    } catch(e){
+        console.log(e);
         
-//         res.status(500)
-//     }
-//     return true
-// })
+        res.status(500)
+    }
+    return true
+})
 
 router.post('/new/webservice_data', async (req, res)=>{
     let data = await newMeasurementWD(req.body)

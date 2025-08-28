@@ -30,28 +30,28 @@ router.get('/', async (req, res) => {
     
 });
 
-router.get('/from_city', async (req, res) => { 
+// router.get('/from_city', async (req, res) => { 
 
-    req.query.group_type = req.query.group_type || 'minute'
-    req.query.format = req.query.format || 'json'
+//     req.query.group_type = req.query.group_type || 'minute'
+//     req.query.format = req.query.format || 'json'
 
-    let validation = await fromCityValidation(req.query)
+//     let validation = await fromCityValidation(req.query)
 
-    if(validation.error){
-        res.status(400).send(validation.error)
-        return false
-    }
+//     if(validation.error){
+//         res.status(400).send(validation.error)
+//         return false
+//     }
 
-    let response = await getMeasurements(req.query)
+//     let response = await getMeasurements(req.query)
 
-    if(req.query.format === 'csv'){
-        response = JSONtoCSV(response)
-        res.header('Content-Type', 'text/csv');
-        res.attachment('sibh-data.csv');
-    } 
+//     if(req.query.format === 'csv'){
+//         response = JSONtoCSV(response)
+//         res.header('Content-Type', 'text/csv');
+//         res.attachment('sibh-data.csv');
+//     } 
 
-    res.send(response);
+//     res.send(response);
     
-});
+// });
 
 module.exports = router
