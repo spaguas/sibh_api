@@ -1,5 +1,5 @@
 const { getParameters } = require('../config/database');
-const {getSubugrhis} = require('../config/database/subugrhi_db')
+const {getSubugrhis,getSubugrhisJson} = require('../config/database/subugrhi_db')
 const express = require('express');
 const router = express.Router();
 
@@ -18,5 +18,11 @@ router.get('/', async (req, res) => {
     // })
     res.send(subugrhis)
 });
+
+router.get('/map_json', async (req,res) =>{
+    let subugrhis = await getSubugrhisJson()
+
+    res.send(subugrhis)
+})
 
 module.exports = router
