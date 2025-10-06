@@ -107,7 +107,7 @@ const getMeasurements = async (options = {}) =>{
         query.orderBy('date', 'desc')
     }
     
-    query.timeout(options.authorized ? 60000 : 30000, {cancel:true})
+    query.timeout((options.authorized || options.force) ? 60000 : 30000, {cancel:true})
 
     return query
 }
