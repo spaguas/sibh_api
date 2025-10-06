@@ -106,8 +106,11 @@ const getMeasurements = async (options = {}) =>{
     if (options.group_type !== 'all') {
         query.orderBy('date', 'desc')
     }
-    
-    query.timeout((options.authorized || options.force) ? 60000 : 30000, {cancel:true})
+
+    //workaround sssp for now
+    if(!options.force){
+        query.timeout((options.authorized) ? 60000 : 30000, {cancel:true})
+    }
 
     return query
 }
