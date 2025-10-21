@@ -20,6 +20,7 @@ const bodyParser = require('body-parser');
 const metricRoutes = require("@routes/metricRoutes")
 const { corsOptions } = require('./config/cors');
 const { metricsMiddleware } = require('@middlewares/middlewares')
+const decreeRoutes = require('./routes/decreeRoutes')
 
 const app = express();
 
@@ -41,5 +42,6 @@ app.use('/cities', cityRoutes)
 app.use('/hidroapp_stats', hidroappRoutes)
 app.use('/s3', s3Routes)
 app.use('/metrics', metricRoutes)
+app.use('/decrees', decreeRoutes)
 
 module.exports = app
