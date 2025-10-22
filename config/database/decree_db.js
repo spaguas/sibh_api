@@ -1,4 +1,4 @@
-const { buildWhere } = require("../../models/decreeCityModel")
+const { buildWhere, buildJoin } = require("../../models/decreeCityModel")
 const serializer = require("../../serializers/serializer")
 const { pg } = require("../knex")
 
@@ -18,6 +18,8 @@ const getCityDecrees = async (options = {}) =>{
     query.select(fields)
 
     buildWhere(options, query)
+
+    buildJoin(options, query)
 
     return query
 

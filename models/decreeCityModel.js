@@ -15,6 +15,10 @@ const buildWhere = (params, query) =>{
     }
 }
 
+const buildJoin = (params, query) => {
+    query.join('cities', 'cities.id', 'city_decrees.city_id')
+}
 module.exports = {
-    buildWhere
+    buildWhere,
+    buildJoin
 }
