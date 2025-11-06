@@ -108,9 +108,9 @@ const getMeasurements = async (options = {}) =>{
     }
 
     //workaround sssp for now
-    if(!options.force){
-        query.timeout((options.authorized) ? 60000 : 30000, {cancel:true})
-    }
+    // if(!options.force){
+        // query.timeout((options.authorized) ? 120000 : 30000, {cancel:true})
+    // }
 
     return query
 }
