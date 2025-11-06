@@ -1,5 +1,5 @@
 const { getParameters } = require('../config/database');
-const {getSubugrhis,getSubugrhisJson} = require('../config/database/subugrhi_db')
+const {getSubugrhis,getSubugrhisJson, getSubugrhiCities} = require('../config/database/subugrhi_db')
 const express = require('express');
 const router = express.Router();
 
@@ -17,6 +17,19 @@ router.get('/', async (req, res) => {
     //     ...(parameters ? {parameters:parameters} : {}) //só se for solicitado
     // })
     res.send(subugrhis)
+});
+
+router.get('/with_cities', async (req, res) => {  
+    let response  
+    try{
+        response = await getSubugrhiCities(req.query)
+    } catch(e){
+        console.log(e);
+        
+        res.status(500)
+    }
+    
+    res.send(response);
 });
 
 router.get('/map_json', async (req,res) =>{

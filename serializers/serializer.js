@@ -44,6 +44,9 @@ const serializer = {
     },
     hidroappview:{
         default: ['model_type', 'model_id', 'month', 'spi_6_max', 'spi_6_min', 'spi_6_avg', 'ndvi_avg', 'ndvi_max', 'ndvi_min', 'rain_avg', 'rain_max', 'rain_min', 'dm_avg', 'dm_max', 'dm_min', 'temp_avg','temp_max', 'temp_min', 'temp_max_max', 'temp_max_min', 'temp_max_avg', 'temp_min_max', 'temp_min_min', 'temp_min_avg', 'dsc_avg']
+    },
+    city_decree: {
+        default: ['city_id', 'cities.cod_ibge', 'cities.name', 'decree_type', 'state_approve', 'state_approve_date', 'federal_approve', 'federal_approve_date', 'decree_number', 'start', 'end', 'decree_link']
     }
 }
 
