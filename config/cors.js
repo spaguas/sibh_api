@@ -4,7 +4,7 @@ const ENV = process.env.ENVIRONMENT
 
 const corsOptions = {
     origin: "*",
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], // Métodos permitidos
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'], // Métodos permitidos
     allowedHeaders: ['Content-Type', 'Authorization', 'user-token', 'user-email'], // Cabeçalhos permitidos
     exposedHeaders: ['X-Custom-Header'], // Cabeçalhos expostos ao cliente
     optionsSuccessStatus: 204 // Status padrão para respostas pré-flight bem-sucedidas
