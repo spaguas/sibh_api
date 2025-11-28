@@ -31,6 +31,17 @@ const getStation = async (id) =>{
     return query
 }
 
+// retorna o posto sem nenhum join, apenas diferenciado pelo serializador
+const getStationRaw = async (id, serializer_name='very_short') =>{
+    let fields = serializer.station[serializer_name]
+
+    let query = pg.table('station_prefixes').select(fields)
+    
+    query = await query.whereRaw("station_prefixes.id = ?", id).first()
+
+    return query
+}
+
 const getStations = async (options = {}) =>{
     
     let serializer_name = validateSerializer(options.serializer, 'station') ? options.serializer : 'default'
@@ -165,5 +176,6 @@ module.exports = {
     getMeasurements,
     getParameters,
     newParameters,
-    getStation
+    getStation,
+    getStationRaw // retorna o posto sem nenhum join, apenas diferenciado pelo serializador
 }

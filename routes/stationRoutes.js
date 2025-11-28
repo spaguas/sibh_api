@@ -1,8 +1,11 @@
 const express = require('express');
 const { scanKey, writeKey, filterData,scanList,writeList } = require('../services/redisService');
-const { getStations,getStation } = require('../config/database');
+const { getStations,getStation, getStationRaw } = require('../config/database');
 const { appendParametersOfStations,appendParametersOfStation } = require('../models/stationModel');
 const { getParameters } = require('../config/database/parameter_db');
+const { handleValidation: stationValidation} = require('../validation/station/stationParamValidation')
+const {updateStationPrefixField} = require('../config/database/station_prefix_db')
+const { authenticateToken, authorize, optionalAuthorize,optionalAuthenticateToken } = require('../middlewares/authMiddleware');
 const router = express.Router();
 
 router.get('/', async (req, res) => {
@@ -58,6 +61,32 @@ router.get('/:id', async (req, res)=>{
   data = await appendParametersOfStation(data, req.params.id)
 
   res.send(data)
+})
+
+//alterar o campo public de uma estação
+router.patch('/:id/public', authenticateToken, authorize(['dev', 'admin']), async (req, res)=>{
+  if(req.body?.public){
+
+    //validnado parametros
+    let {error} = await stationValidation({...req.params, ...req.body})
+    if(error) return res.status(400).send(error)
+
+    //buscando posto com id fornecido
+    let data = await getStationRaw(req.params.id)
+    if(!data) return res.status(404).send({error: 'Posto com id informado não encontrado'});
+    
+    //atuaizando status do posto
+    try{
+      let response = await updateStationPrefixField(req.params.id, {public: req.body.public, public_control:req.body.public_control})
+      res.send(response)
+    } catch(e){
+      res.status(500).send({e:e, message:'Erro desconhecido ao atualizar status do posto'})
+    }
+    
+  } else {
+    res.status(500).send({error:'campo "public" obrigatório'})
+  }
+  
 })
 
 module.exports = router
