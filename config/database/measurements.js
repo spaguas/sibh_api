@@ -8,7 +8,6 @@ const getNowMeasurementsFlu = async (options) =>{
 
     let validation = await handleValidation(options)
 
-    console.log(validation);
 
     if(validation.error && validation.error.details.length > 0){
         return validation.error
@@ -16,7 +15,7 @@ const getNowMeasurementsFlu = async (options) =>{
     
     let fields = [
         pg.raw('DISTINCT ON (measurements.station_prefix_id) measurements.station_prefix_id'),
-        'station_prefixes.id', 'stations.name as station_name', 'date_hour','station_prefixes.prefix','value','read_value','stations.latitude','stations.longitude','station_owners.name as station_owner', 'cities.id as city_id','cities.name as city', 'cities.cod_ibge as cod_ibge', 'ugrhis.id as ugrhi_id', 'ugrhis.name as ugrhi', 'subugrhis.id as subugrhi_id', 'subugrhis.name as subugrhi', 'station_prefixes.measurement_gap', 'station_prefixes.net_group'
+        'station_prefixes.id', 'stations.name as station_name', 'date_hour','station_prefixes.prefix','value','read_value','stations.latitude','stations.longitude','station_owners.name as station_owner', 'cities.id as city_id','cities.name as city', 'cities.cod_ibge as cod_ibge', 'ugrhis.id as ugrhi_id', 'ugrhis.name as ugrhi', 'subugrhis.id as subugrhi_id', 'subugrhis.name as subugrhi', 'station_prefixes.measurement_gap', 'station_prefixes.net_group', 'station_prefixes.public'
     ]
 
     if(options.references && options.references.length > 0){

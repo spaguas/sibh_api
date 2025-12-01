@@ -77,7 +77,7 @@ router.patch('/:id/public', authenticateToken, authorize(['dev', 'admin']), asyn
     
     //atuaizando status do posto
     try{
-      let response = await updateStationPrefixField(req.params.id, {public: req.body.public, public_control:req.body.public_control})
+      let response = await updateStationPrefixField(req.params.id, {public: req.body.public, public_control:req.body.public_control || ''})
       res.send(response)
     } catch(e){
       res.status(500).send({e:e, message:'Erro desconhecido ao atualizar status do posto'})
