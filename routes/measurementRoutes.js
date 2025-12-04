@@ -5,8 +5,8 @@ const { prepareToCSV } = require('../models/measurementModel');
 const {handleValidation: nowValidation} = require('../validation/measurement/nowParamsValidation')
 const {handleValidation: fromCityValidation} = require('../validation/measurement/cotFromCityParamsValidation')
 const {handleValidation: measurementHandleValidation} = require('../validation/measurement/measurementParamsValidation');
-const { getNowMeasurementsFlu, newMeasurementWD, updateMeasurementFields } = require('../config/database/measurements');
-const { updateStatusValidation } = require('../validation/measurement/utilValidations');
+const { getNowMeasurementsFlu, newMeasurementWD, updateMeasurementFields, updateMeasurementsFields } = require('../config/database/measurements');
+const { updateStatusValidation, updateStatusesValidation } = require('../validation/measurement/utilValidations');
 const { authenticateToken, authorize, optionalAuthorize,optionalAuthenticateToken } = require('../middlewares/authMiddleware');
 
 const router = express.Router();
@@ -160,6 +160,23 @@ router.get('/cot_from_city', async(req, res)=>{
 router.post('/new/webservice_data', async (req, res)=>{
     let data = await newMeasurementWD(req.body)
     res.send(data)
+})
+
+router.post('/update_classification', async(req, res)=>{
+    
+    let validation = await updateStatusesValidation(req.body)
+
+    if(validation.error && validation.error.details.length > 0) return res.send(validation.error);
+    
+    try{
+        let data = await updateMeasurementsFields(req.body.measurement_ids, {measurement_classification_type_id: req.body.status})
+        return res.send(data)
+    } catch(e){
+        return res.status(500).send({message: 'Erro ao atualizar status das medições', e:e})
+    }
+    
+
+    
 })
 
 router.post('/:id/classification', authenticateToken, authorize(['admin', 'dev']), async (req, res)=>{

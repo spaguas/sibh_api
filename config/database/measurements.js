@@ -83,8 +83,13 @@ const updateMeasurementFields = async (measurement_id, obj) =>{
     return await pg.table('measurements').where({id: measurement_id}).update(obj).returning('*');
 }
 
+const updateMeasurementsFields = async (measurement_ids, obj) =>{    
+    return await pg.table('measurements').whereIn('id',measurement_ids).update(obj).returning('id');
+}
+
 module.exports = {
     getNowMeasurementsFlu,
     newMeasurementWD,
-    updateMeasurementFields
+    updateMeasurementFields,
+    updateMeasurementsFields
 }
