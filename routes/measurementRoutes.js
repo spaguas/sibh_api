@@ -162,7 +162,7 @@ router.post('/new/webservice_data', async (req, res)=>{
     res.send(data)
 })
 
-router.post('/update_classification', async(req, res)=>{
+router.post('/update_classification', authenticateToken, authorize(['admin', 'dev']), async(req, res)=>{
     
     let validation = await updateStatusesValidation(req.body)
 
