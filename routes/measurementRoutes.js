@@ -5,9 +5,11 @@ const { prepareToCSV } = require('../models/measurementModel');
 const {handleValidation: nowValidation} = require('../validation/measurement/nowParamsValidation')
 const {handleValidation: fromCityValidation} = require('../validation/measurement/cotFromCityParamsValidation')
 const {handleValidation: measurementHandleValidation} = require('../validation/measurement/measurementParamsValidation');
+const {handleValidation: diagramsParamsValidation} = require('../validation/measurement/diagramsParamsValidation');
 const { getNowMeasurementsFlu, newMeasurementWD, updateMeasurementFields, updateMeasurementsFields } = require('../config/database/measurements');
 const { updateStatusValidation, updateStatusesValidation } = require('../validation/measurement/utilValidations');
 const { authenticateToken, authorize, optionalAuthorize,optionalAuthenticateToken } = require('../middlewares/authMiddleware');
+const { getMeasurementsFromDiagram } = require('../config/database/diagrams_db');
 
 const router = express.Router();
 
@@ -196,6 +198,27 @@ router.post('/:id/classification', authenticateToken, authorize(['admin', 'dev']
         
     }
     
+})
+
+//retorna a lista de medições para a geração do diagrama da área informada
+router.get('/diagrams/:id', async(req, res)=>{
+    let options = req.params
+
+    let validation = await diagramsParamsValidation(options) //validando parâmetros
+    
+    if(validation.error && validation.error.details.length > 0){
+        res.status(500)
+        res.send(validation.error)
+        return false
+    }
+
+    try{
+        let  response  = await getMeasurementsFromDiagram(options.id)
+        res.send(response)
+    } catch(e){
+        console.log(e);
+        res.status(500).send({message: 'Erro ao buscar dados do diagrama', e})
+    }   
 })
 
 module.exports = router
