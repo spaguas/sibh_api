@@ -1,6 +1,7 @@
 const { getMeasurements } = require("../database")
 const { pg } = require("../knex")
 const moment = require('moment')
+const { getParameters } = require("./parameter_db")
 
 const getMeasurementsFromDiagram = async (id) =>{
     
@@ -11,8 +12,9 @@ const getMeasurementsFromDiagram = async (id) =>{
     let response = await query
     // console.log(response.options)
     if(response){
-        let stations_prefixes_ids = [...(response.options.stations?.flu || []), ...(response.options.stations?.plu || [])]
-        console.log(stations_prefixes_ids)
+        let prefixes_flu = response.options.stations?.flu || []
+        let stations_prefixes_ids = [...prefixes_flu, ...(response.options.stations?.plu || [])]
+
         let options = {
             station_prefix_ids: stations_prefixes_ids,
             format: 'json',
@@ -22,9 +24,12 @@ const getMeasurementsFromDiagram = async (id) =>{
             serializer: 'default'
         }
 
-        let measurements = await getMeasurements(options)
+        const [measurements, parameters] = await Promise.all([
+            getMeasurements(options),
+            getParameters({parameter_type_id:2, parameterizable_type:'StationPrefix', parameterizable_ids:prefixes_flu})
+        ])
 
-        return measurements
+        return {measurements, parameters}
     }
 
     return null
