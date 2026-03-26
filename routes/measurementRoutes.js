@@ -37,11 +37,12 @@ router.get('/', optionalAuthenticateToken, optionalAuthorize(['dev', 'admin']), 
         if(options['format'] === 'csv'){
             let csv = prepareToCSV(response)
             // Define os cabeçalhos para download
+            res.status(200)
             res.setHeader('Content-Type', 'text/csv');
             res.setHeader('Content-Disposition', 'attachment; filename="dados.csv"');
         
             // Envia o conteúdo
-            res.send(csv);
+            return res.send(csv);
         }
 
         if(options['parameter_type_ids']){
