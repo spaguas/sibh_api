@@ -111,7 +111,7 @@ const prepareToCSV = (data) =>{
     const header = 'Prefixo,Nome,TipoPosto,Data,Valor,Valor2\n';
 
     // Concatena os dados
-    const linhas = data.map(d => `${d.prefix},${d.station_name},${d.station_type_id},${d.date},${d.value},${d.read_value}`).join('\n');
+    const linhas = data.map(d => `${d.prefix},${d.station_name},${d.station_type_id},${d.date},${d.station_type_id.toString() === '1' ? (d.value / 100).toFixed(3) : d.value},${d.read_value}`).join('\n');
   
     return header + linhas;
 }
