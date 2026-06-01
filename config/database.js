@@ -114,7 +114,9 @@ const getMeasurements = async (options = {}) =>{
 
     query.orderBy('station_prefix_id')
     
-    if (options.group_type !== 'all') {
+    if(options['format'] === 'csv'){
+        query.orderByRaw("station_prefix_id, date_hour asc")
+    } else if (options.group_type !== 'all') {
         query.orderBy('date', 'desc')
     }
 
