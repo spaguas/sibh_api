@@ -21,6 +21,7 @@ const metricRoutes = require("@routes/metricRoutes")
 const { corsOptions } = require('./config/cors');
 const { metricsMiddleware } = require('@middlewares/middlewares')
 const decreeRoutes = require('./routes/decreeRoutes')
+const damRoutes = require('./routes/damRoutes')
 
 const app = express();
 
@@ -43,5 +44,6 @@ app.use('/hidroapp_stats', hidroappRoutes)
 app.use('/s3', s3Routes)
 app.use('/metrics', metricRoutes)
 app.use('/decrees', decreeRoutes)
+app.use('/dams', damRoutes)
 
 module.exports = app

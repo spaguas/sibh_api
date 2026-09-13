@@ -47,6 +47,9 @@ const serializer = {
     },
     city_decree: {
         default: ['city_id', 'cities.cod_ibge', 'cities.name', 'decree_type', 'state_approve', 'state_approve_date', 'federal_approve', 'federal_approve_date', 'decree_number', 'start', 'end', 'decree_link']
+    },
+    dam: {
+        default: ['id', 'cod', 'name', 'geometry', 'params', 'created_at', 'updated_at']
     }
 }
 
