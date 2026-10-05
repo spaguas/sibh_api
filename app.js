@@ -25,6 +25,8 @@ const damRoutes = require('./routes/damRoutes')
 
 const app = express();
 
+app.set('query parser', 'extended'); //mantém o comportamento de parsing de query string do Express 4 (arrays via repetição/colchetes)
+
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cors(corsOptions))
@@ -45,5 +47,17 @@ app.use('/s3', s3Routes)
 app.use('/metrics', metricRoutes)
 app.use('/decrees', decreeRoutes)
 app.use('/dams', damRoutes)
+
+//middleware de erro global: no Express 5, erros (inclusive promises rejeitadas em handlers async)
+//chegam aqui via next(err) em vez de derrubar o processo
+app.use((err, req, res, next) => {
+    console.error('Erro não tratado numa rota:', err)
+
+    if(res.headersSent){
+        return next(err)
+    }
+
+    res.status(500).send({error: 'Erro interno no servidor'})
+})
 
 module.exports = app
