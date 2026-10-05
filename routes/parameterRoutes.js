@@ -1,4 +1,4 @@
-const {getParameters} = require('../config/database')
+const {getParameters, newParameters} = require('../config/database')
 const express = require('express');
 const router = express.Router();
 

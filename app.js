@@ -2,6 +2,7 @@ require('module-alias/register');
 require('dotenv').config()
 
 const express = require('express');
+const qs = require('qs');
 const cors = require('cors');
 const { getMeasurements, getCities, getParameters } = require('./config/database');
 const parameterRoutes = require('./routes/parameterRoutes')
@@ -25,7 +26,10 @@ const damRoutes = require('./routes/damRoutes')
 
 const app = express();
 
-app.set('query parser', 'extended'); //mantém o comportamento de parsing de query string do Express 4 (arrays via repetição/colchetes)
+//mantém o comportamento de parsing de query string do Express 4 (arrays via repetição/colchetes).
+//usa parser customizado (em vez da string 'extended') porque o qs >=6.14.2 passou a limitar arrays
+//via colchetes [] a 20 itens por padrão (arrayLimit); várias rotas recebem listas de ids maiores que isso
+app.set('query parser', (str) => qs.parse(str, { arrayLimit: 1000 }));
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
